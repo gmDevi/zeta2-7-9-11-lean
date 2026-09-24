@@ -40,13 +40,14 @@ Nothing else is assumed. `scripts/audit.sh` reports no `axiom`, `native_decide` 
 
 ```
 Zeta2Lean/Defs.lean        all definitions + a few proved API lemmas (volkenbornSum_add, HasVolkenborn.sum,
-                           halfPow_eq_cast, Phi_dvd_dn, Dn_pos, Dn_mul_Phi, ...)
+                           halfPow_eq_cast, mem_chains, chainPrev_le, Phi_dvd_dn, Dn_pos, Dn_mul_Phi, ...)
 Zeta2Lean/Statements.lean  one Stmt_X : Prop per lemma (structures with named fields for Δ-calculus etc.)
 Zeta2Lean/Assembly.lean    main_of_stmts : Stmt_JConv → Stmt_L1 → Stmt_L2cor → Stmt_L4 → Stmt_L5 →
                            Stmt_Asymptotic → Stmt_Criterion → PNT_Stmt → MainStatement   (complete, no sorry)
 Zeta2Lean/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X := by sorry   (24 files)
 Zeta2Lean/Main.lean        wires everything; #print axioms
 python/mirror.py           exact-arithmetic mirror of Defs.lean + numerical checks of every Stmt
+python/audit_independent.py, python/jcheck_bernoulli.py   independent re-implementation (audit, see below)
 ```
 
 Proof files import only `Zeta2Lean.Statements`. They receive their dependencies as hypotheses, so they
@@ -167,6 +168,42 @@ checks. The full-run log is `python/mirror_full.log` (0 checks failed; `v₂(S_{
   two irrational" would need forms that eliminate one of the values, or a linear-independence
   criterion (Nesterenko/Siegel type) with several independent forms. Neither is available here, and
   the margin (−0.09 per n) leaves no room for such losses.
-* Other (a, j): the same machinery (L1, L2 with the Andrews saving d_n^{a+j}, L4, L5 dominant term)
-  gives exponent `(a + j) − 2a log 2`. The only triple is (8, 3). (10, 3) gives Lai's {7, 9, 11, 13}
-  again, with margin −0.86 (proof.md §11). (6, 3) would give {7, 9} but has exponent +0.68, so it fails.
+  Equivalently, the theorem says `dim_ℚ span{1, ζ₂(7), ζ₂(9), ζ₂(11)} ≥ 2`; "two of three" would follow
+  from `dim ≥ 3`, which one sequence of forms cannot give.
+* Other (a, j): heuristically (L1, L2 with the Andrews saving d_n^{a+j}, L4, and an L5 dominant term)
+  the exponent is `(a + j) − 2a log 2`. The only new triple is (8, 3) ((8, 1) gives {5, 7, 9}, which
+  contains the known-irrational ζ₂(5)). (10, 3) would give Lai's {7, 9, 11, 13} again with margin −0.86,
+  but its L5 case analysis (binomials C(10, ·)) is only numerical/sketch (proof.md §11). (6, 3) would give
+  {7, 9} but has exponent +0.68, so it fails; no (a, j) gives a new pair.
+
+## Audit (adversarial faithfulness check, 2026-09-24)
+
+Every definition and `Stmt_*` was re-derived by hand against proof.md §§2–8 (indices, ranges, the `1/2`
+shifts, `(i)₃` in `integrand` vs `(i)₄` in `rho0`, `Z`-constants, signs, natural-number subtraction) and
+re-tested with code written independently of `mirror.py` (`python/audit_independent.py`, exact
+`Fraction`s). No false or unfaithful statement was found. Checked:
+
+* `rcoef` (Ψ-formula) = Laurent coefficients computed factor by factor from the product form (n ≤ 20);
+  `R_n(t) = ∑ r_{i,k}(t+k)^{-i}` at random rational t; `PF.series`; symm/c₁/c_even (n ≤ 24);
+  L1 as an exact algebraic identity (J symbolic, n ≤ 15); n = 0, 1 values of proof.md.
+* BlockF for **all** j (n ≤ 40); L2a, L2b, L2c, L2cor for n ≤ 150; ResidueForm n ≤ 12;
+  AndrewsApplied at random rational ε and FJClosed for all chains, n ≤ 10; FJKummer exhaustively on
+  critical chains (p = 11, 13, 17; minimum −4, attained).
+* `Andrews_Stmt` (cited): matches Krattenthaler–Rivoal Théorème 8, (6.1) verbatim (incl. the m = 0
+  convention); exact at 316 generic and 850 degenerate (half-integer) parameter sets, m ≤ 5 and m = 8,
+  and in the specialisation used by AndrewsApplied (all hypotheses hold there).
+* Leibniz: `integrand` = `−6[ε³]R_n(x+½+ε)` (product form) = ∑ `leibTerm` (n ≤ 6); LeibTermBound
+  (m = 2, 3 all terms, m = 4 sampled; minimum non-dominant slack 0 at γ = β = 0, M = 3·[k₀]); L5Dom.
+* L5 at the Riemann-sum level: `v₂(R_M(integrand)) = target m` for all tested `M ≥ m`, m = 2..5 (no
+  J-values used); and in the limit, with J-values recomputed from the Bernoulli moments
+  `J_s = 2^s ∑_j C(−s,j) 2^j B_j` (`python/jcheck_bernoulli.py`), which agree with the cache to > 1140
+  bits: `v₂(S_n) = 88, 205, 450, 951` for m = 2..5.
+* `zeta2` normalisation checked against LSZ Lemma 2.8; `PNT_Stmt` uses Mathlib's
+  `Chebyshev.psi x = ∑_{n ≤ ⌊x⌋} Λ(n)` (standard ψ). PNT is not in this Mathlib (only Chebyshev bounds
+  and ζ-nonvanishing on Re s = 1 are), so it must stay cited; no Kubota–Leopoldt ζ₂ exists in Mathlib,
+  so the LSZ identification stays a documented citation.
+* `#print axioms Zeta2.main_of_stmts`: `propext, Classical.choice, Quot.sound`.
+
+Changes made by the audit: `mem_chains`, `chainPrev_le` added (proved) to `Defs.lean`; two
+non-existent lemma names in hints fixed (`Nat.eq_one_of_self_dvd` in DenomL2b, `padicValRat.prod` /
+`mem_chains` in KummerFJ); chain-API pointers added to ClosedFormFJ and DenomL2c.

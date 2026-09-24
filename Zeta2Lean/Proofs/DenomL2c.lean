@@ -25,7 +25,8 @@ nothing to prove, but it is never `0`.)
 **Lean hints.** `padicValRat.min_le_padicValRat_add`, `padicValRat.mul`, `padicValRat.pow`,
 `padicValRat.inv`, `padicValRat.neg`, `padicValRat.of_nat`, `padicValNat_le_nat_log`,
 `Nat.log_eq_iff`, `PowerSeries.coeff_mul`, `PowerSeries.coeff_prod`, `PowerSeries.constantCoeff_inv`,
-`PowerSeries.eq_inv_iff_mul_eq_one`, `Finset.sum_induction` (for "every term ≥ c ⇒ sum ≥ c").
+`PowerSeries.eq_inv_iff_mul_eq_one`, `Finset.sum_induction` (for "every term ≥ c ⇒ sum ≥ c"),
+`mem_chains`, `chainPrev_le` (in `Defs.lean`; they give `J_i ≤ N` for the factor bounds).
 A convenient predicate: `vpGe p c x := x = 0 ∨ c ≤ padicValRat p x` (closed under `+`, and
 `vpGe p c x → vpGe p c' y → vpGe p (c+c') (x*y)`).
 

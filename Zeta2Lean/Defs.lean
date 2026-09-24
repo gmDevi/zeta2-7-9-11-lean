@@ -318,6 +318,19 @@ theorem halfPow_eq_cast (s x : ℕ) :
     halfPow s x = (((((x : ℚ) + 1 / 2)⁻¹) ^ s : ℚ) : ℚ_[2]) := by
   simp [halfPow, one_div]
 
+/-- Membership in `chains m N`: values `≤ N` and monotone. -/
+theorem mem_chains {m N : ℕ} {i : Fin m → ℕ} :
+    i ∈ chains m N ↔ (∀ k, i k ≤ N) ∧ ∀ a b : Fin m, a ≤ b → i a ≤ i b := by
+  simp [chains, Fintype.mem_piFinset]
+
+/-- Along a chain, `i_{k-1} ≤ i_k` (so `i k - chainPrev i k` is an honest difference). -/
+theorem chainPrev_le {m N : ℕ} {i : Fin m → ℕ} (hi : i ∈ chains m N) (k : Fin m) :
+    chainPrev i k ≤ i k := by
+  unfold chainPrev
+  split_ifs with h
+  · exact Nat.zero_le _
+  · exact (mem_chains.1 hi).2 _ _ (by rw [Fin.le_def]; simp)
+
 /-- `Φ_n ∣ d_n`: `Φ_n` is a product of distinct primes `≤ n`. -/
 theorem Phi_dvd_dn (n : ℕ) : Phi n ∣ dn n := by
   have h1 : Phi n ∣ primorial n := by

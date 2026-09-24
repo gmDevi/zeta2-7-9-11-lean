@@ -28,7 +28,7 @@ It suffices that `d_n^{12} X(k₀,ℓ₀)` is `q`-integral for every prime `q` a
 `padicValRat.mul`, `padicValRat.pow`, `padicValRat.inv`, `padicValRat.of_int`, `padicValRat_of_nat`,
 `Nat.factorization_lcmUpto : (lcmUpto n).factorization p = Nat.log p n`,
 `Nat.lt_pow_succ_log_self`, `Nat.pow_log_le_self`, `Rat.den_eq_one_iff`, `Rat.num_div_den`,
-`Nat.eq_one_of_self_dvd` / "no prime divides the denominator", `PowerSeries.coeff_mul`,
+`Nat.eq_one_iff_not_exists_prime_dvd` ("no prime divides the denominator"), `PowerSeries.coeff_mul`,
 `PowerSeries.X_pow_dvd_iff`, `Finset.prod_erase_mul`, `Finset.sum_comm`, `Finset.sum_sigma'`.
 One clean route: prove `∀ q prime, 0 ≤ padicValRat q (d_n^{12} ρ₀)` (or `ρ₀ = 0`), then conclude
 `(d_n^{12} ρ₀).den = 1` (a positive integer with no prime factor is `1`: `Nat.eq_one_iff_not_exists_prime_dvd`).

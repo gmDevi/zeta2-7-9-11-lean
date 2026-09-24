@@ -31,9 +31,9 @@ is the hypothesis used downstream.]
 (Kummer; use `b = 2` since `2m < p²`), `Nat.Prime.dvd_choose_add`, `one_le_padicValNat_of_dvd`,
 `Nat.mod_add_div`, `Nat.add_mod`, `omega` for the residue bookkeeping,
 `Fin.prod_univ_eight`, `Finset.prod_pos`, `Finset.single_le_prod`,
-`padicValRat.prod`-style: `padicValRat` of a product of non-zero factors is the sum (induction
-with `padicValRat.mul`).  Chain facts from `mem_chains` (unfold `chains`: `Fintype.mem_piFinset`,
-`Finset.mem_filter`).
+There is no `padicValRat.prod` in Mathlib: prove "`padicValRat` of a product of non-zero factors is
+the sum of the valuations" by `Finset` induction with `padicValRat.mul`.  Chain facts:
+`mem_chains`, `chainPrev_le` (proved in `Defs.lean`).
 
 **Numerical check.** `python/mirror.py`, section "... Stmt_FJKummer ..." (random critical-biased
 samples, `n ≤ 300`).

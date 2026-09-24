@@ -27,7 +27,8 @@ the numerical mirror confirms the identity exactly for `n ≤ 5`.
 `Nat.choose_mul_factorial_mul_factorial`, `Fin.prod_univ_castSucc`, `Fin.prod_univ_eight`,
 `field_simp`, `ring`.  Useful: prove `rpoch (1/2 : ℚ) m = (2m)! / (4^m m!)` by induction; then
 express `rpoch (-N) J = (-1)^J N!/(N-J)!`, `rpoch (1/2 - N) J = (-1)^J (1/2)_N / (1/2)_{N-J}`, etc.
-Membership `J ∈ chains 8 (n-ℓ)` gives monotonicity and `J i ≤ n - ℓ` (so `n - ℓ - J i` is honest).
+Membership `J ∈ chains 8 (n-ℓ)` gives monotonicity and `J i ≤ n - ℓ` (so `n - ℓ - J i` is honest):
+`mem_chains`, `chainPrev_le` (proved in `Defs.lean`).
 
 **Numerical check.** `python/mirror.py`, section "... Stmt_FJClosed ..." (all chains, `n ≤ 5`).
 -/
