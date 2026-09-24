@@ -1,21 +1,29 @@
-name: Lean Action CI
+name: Lean CI
 
 on:
   push:
   pull_request:
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read # Read access to repository contents
-  pages: write # Write access to GitHub Pages
-  id-token: write # Write access to ID tokens
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      - uses: leanprover-community/docgen-action@v1
+      - name: Sorry / forbidden-construct census
+        run: |
+          bash scripts/audit.sh | tee audit.log
+          ! grep -A1000 '== sorry / admit per file' audit.log | grep -B1000 '== forbidden' | grep -q '\.lean:'
+          grep -A1000 '== forbidden' audit.log | grep -q '(none)'
+      - name: Axioms of the main theorem
+        run: |
+          lake env lean Zeta2Lean/Main.lean 2>&1 | tee main.log
+          grep -F "'Zeta2.zeta2_7_9_11_not_all_rational' depends on axioms: [propext, Classical.choice, Quot.sound]" main.log
+      - name: Kernel replay (leanchecker)
+        run: |
+          BIN="$(dirname "$(elan which lean)")"
+          lake env "$BIN/leanchecker" Zeta2Lean.Main

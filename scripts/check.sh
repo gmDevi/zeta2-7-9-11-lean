@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Elaborate ONE Lean file against the already-built imports (writes no .olean, safe to run in parallel).
-# usage (from Windows PowerShell):
-#   wsl -d Ubuntu --cd /home/mdevi/zeta2-lean -- bash scripts/check.sh Zeta2Lean/Proofs/Foo.lean
+# usage (from the project root):
+#   bash scripts/check.sh Zeta2Lean/Proofs/Foo.lean
 # env: TIMEOUT (seconds, default 1800)
 export PATH="$HOME/.elan/bin:$PATH"
-cd "$HOME/zeta2-lean" || exit 2
+cd "$(dirname "$0")/.." || exit 2
 f="$1"
 if [ ! -f "$f" ]; then echo "no such file: $f"; exit 2; fi
 start=$(date +%s)
