@@ -32,8 +32,40 @@ noncomputable section
 
 namespace Zeta2.Cited
 
+namespace ChainSum
+
+/-- Chains of length `m + 1` in `[0, n]`, sorted by their last entry `j`: the map
+`i ↦ ⟨i (last m), Fin.init i⟩` is a bijection onto the sigma-set `Σ j ≤ n, chains m j`, with
+inverse `⟨j, i'⟩ ↦ Fin.snoc i' j` (Andrews scout, `docs/cited/AndrewsScout.lean`). -/
+lemma sum_chains_succ {M : Type*} [AddCommMonoid M] (m n : ℕ) (f : (Fin (m + 1) → ℕ) → M) :
+    ∑ i ∈ chains (m + 1) n, f i = ∑ j ∈ range (n + 1), ∑ i' ∈ chains m j, f (Fin.snoc i' j) := by
+  rw [Finset.sum_sigma']
+  refine Finset.sum_nbij' (fun i => ⟨i (Fin.last m), Fin.init i⟩) (fun p => Fin.snoc p.2 p.1)
+    ?_ ?_ ?_ ?_ ?_
+  · -- `i ↦ ⟨i (last m), init i⟩` maps chains into the sigma-set
+    intro i hi
+    simp only [Finset.mem_sigma, Finset.mem_range]
+    have hi' := hi
+    rw [mem_chains] at hi'
+    exact ⟨Nat.lt_succ_of_le (hi'.1 _), init_mem_chains hi⟩
+  · -- `⟨j, i'⟩ ↦ snoc i' j` maps the sigma-set into chains
+    intro p hp
+    simp only [Finset.mem_sigma, Finset.mem_range] at hp
+    exact snoc_mem_chains hp.2 (Nat.le_of_lt_succ hp.1)
+  · -- left inverse: `snoc (init i) (i (last m)) = i`
+    intro i _
+    simp [Fin.snoc_init_self]
+  · -- right inverse: `⟨(snoc i' j) (last m), init (snoc i' j)⟩ = ⟨j, i'⟩`
+    intro p _
+    simp [Fin.init_snoc, Fin.snoc_last]
+  · -- the summands agree
+    intro i _
+    simp [Fin.snoc_init_self]
+
+end ChainSum
+
 theorem SumChainsSucc_proof : Stmt_SumChainsSucc := by
-  sorry
+  exact fun M _ m n f => ChainSum.sum_chains_succ m n f
 
 end Zeta2.Cited
 

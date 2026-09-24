@@ -43,8 +43,72 @@ noncomputable section
 
 namespace Zeta2.Cited
 
+namespace ChainStep
+
+/-! The four fields of `Stmt_ChainStep`, as lemmas (the scout's `Achain_zero`, `Achain_succ`,
+`Bchain_zero`, `Bchain_succ`).  `K : Type` (not `Type*`) so that `hS K` applies. -/
+
+variable {K : Type} [Field K]
+
+/-- One pair: `Achain` is one Bailey step applied to `unitα a`. -/
+lemma Achain_zero (a : K) (b c : Fin 1 → K) :
+    Achain a b c = bα a (b 0) (c 0) (unitα a) := by
+  funext r
+  simp [Achain, bα]
+
+/-- `m + 2` pairs: split off the last factor of the product (`Fin.prod_univ_castSucc`). -/
+lemma Achain_succ (a : K) {m : ℕ} (b c : Fin (m + 2) → K) :
+    Achain a b c = bα a (b (Fin.last (m + 1))) (c (Fin.last (m + 1)))
+      (Achain a (Fin.init b) (Fin.init c)) := by
+  funext r
+  simp only [Achain, bα, Fin.prod_univ_castSucc, Fin.init]
+  ring
+
+/-- One pair: only the empty chain, and only `j = 0` survives in `bβ … unitβ`. -/
+lemma Bchain_zero (a : K) (b c : Fin 1 → K) :
+    Bchain a b c = bβ a (b 0) (c 0) unitβ := by
+  funext n
+  have hch : chains 0 n = {Fin.elim0} := by
+    ext i
+    simp only [Finset.mem_singleton]
+    constructor
+    · intro _; funext k; exact k.elim0
+    · intro _; rw [mem_chains]; exact ⟨fun k => k.elim0, fun a _ _ => a.elim0⟩
+  rw [Bchain, hch, Finset.sum_singleton, bβ, Finset.sum_eq_single 0]
+  · simp [bw, unitβ, chainLast, rpoch_zero, Fin.last]
+  · intro j _ hj
+    simp [unitβ, hj]
+  · intro h
+    simp at h
+
+/-- `m + 2` pairs: sort the chains by their last entry (`hS`), then the snoc'd chain's factors
+are the `Fin.init` chain's factors times the last Bailey weight `bw`. -/
+lemma Bchain_succ (hS : Stmt_SumChainsSucc) (a : K) {m : ℕ} (b c : Fin (m + 2) → K) :
+    Bchain a b c = bβ a (b (Fin.last (m + 1))) (c (Fin.last (m + 1)))
+      (Bchain a (Fin.init b) (Fin.init c)) := by
+  funext n
+  rw [Bchain, hS K m n _, bβ]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [Bchain, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun i' _ => ?_)
+  rw [Fin.prod_univ_castSucc, chainLast_snoc]
+  have hcast : ∀ k : Fin m, chainFactor a b c (Fin.snoc i' j) k.castSucc =
+      chainFactor a (Fin.init b) (Fin.init c) i' k := by
+    intro k
+    simp only [chainFactor, Fin.snoc_castSucc, chainPrev_snoc_castSucc, Fin.init,
+      Fin.succ_castSucc]
+  simp only [hcast]
+  simp only [chainFactor, bw, Fin.snoc_last, chainPrev_snoc_last, Fin.succ_last, Fin.init]
+  ring
+
+end ChainStep
+
 theorem ChainStep_proof (hS : Stmt_SumChainsSucc) : Stmt_ChainStep := by
-  sorry
+  exact
+    { achain_zero := fun K _ a b c => ChainStep.Achain_zero a b c
+      achain_succ := fun K _ a m b c => ChainStep.Achain_succ a b c
+      bchain_zero := fun K _ a b c => ChainStep.Bchain_zero a b c
+      bchain_succ := fun K _ a m b c => ChainStep.Bchain_succ hS a b c }
 
 end Zeta2.Cited
 
