@@ -19,10 +19,9 @@ Dependency graph (see `Cited/Statements.lean`):
   (`Vendor/PNT/WienerIkehara ⇐ Vendor/PNT/SchwartzCompactSupport`, by import)
 * `Andrews_Stmt ⇐ BPChain ⇐ UnitPair, BaileyLemma (⇐ PPS), ChainStep (⇐ SumChainsSucc)`
 
-This module is not imported by the root `Zeta2Lean.lean` yet (the verified default build stays
-as it is); build it explicitly with `bash scripts/build.sh Zeta2Lean.Cited.Main`.  While proof
-stubs remain, the `#print axioms` lines below also list `sorryAx`; once every file under
-`Cited/` is complete they must list exactly `[propext, Classical.choice, Quot.sound]`.
+This module is imported by the root `Zeta2Lean.lean`, so `lake build` checks it.  Every file under
+`Cited/` is complete, and the `#print axioms` lines below list exactly
+`[propext, Classical.choice, Quot.sound]` (CI checks this).
 -/
 
 namespace Zeta2

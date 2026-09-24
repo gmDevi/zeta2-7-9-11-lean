@@ -15,19 +15,20 @@ jobs:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
       - name: Sorry / forbidden-construct census
-        # Zeta2Lean/Cited/ (discharge of the two cited hypotheses) is work in progress with proof
-        # stubs; it is not imported by the root module Zeta2Lean.lean, so it is excluded from the
-        # sorry check of the verified build (it is still scanned for forbidden constructs).
-        # Remove the `grep -v` once Cited/ is complete and imported by the root module.
         run: |
           bash scripts/audit.sh | tee audit.log
-          ! grep -A1000 '== sorry / admit per file' audit.log | grep -B1000 '== forbidden' | grep -v '^Zeta2Lean/Cited/' | grep -q '\.lean:'
+          ! grep -A1000 '== sorry / admit per file' audit.log | grep -B1000 '== forbidden' | grep -q '\.lean:'
           grep -A1000 '== forbidden' audit.log | grep -q '(none)'
-      - name: Axioms of the main theorem
+      - name: Axioms of the main theorems
         run: |
           lake env lean Zeta2Lean/Main.lean 2>&1 | tee main.log
           grep -F "'Zeta2.zeta2_7_9_11_not_all_rational' depends on axioms: [propext, Classical.choice, Quot.sound]" main.log
-      - name: Kernel replay (leanchecker)
+          lake env lean Zeta2Lean/Cited/Main.lean 2>&1 | tee cited.log
+          grep -F "'Zeta2.zeta2_7_9_11_not_all_rational_unconditional' depends on axioms: [propext, Classical.choice, Quot.sound]" cited.log
+      - name: Kernel replay (leanchecker, one module at a time)
         run: |
           BIN="$(dirname "$(elan which lean)")"
-          lake env "$BIN/leanchecker" Zeta2Lean.Main
+          for m in $(find Zeta2Lean -name '*.lean' -not -path '*/Scratch/*' | sed 's#\.lean$##; s#/#.#g' | sort); do
+            echo "leanchecker $m"
+            lake env "$BIN/leanchecker" "$m"
+          done

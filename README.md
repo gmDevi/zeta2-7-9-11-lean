@@ -11,13 +11,28 @@ is irrational. Here ζ₂(13) is removed.
 ## What exactly is proved in Lean
 
 ```lean
-theorem Zeta2.zeta2_7_9_11_not_all_rational (hPNT : PNT_Stmt) (hAndrews : Andrews_Stmt) :
-    (∀ s : ℕ, HasVolkenborn (halfPow s) (J s)) ∧
-      ¬ ((∃ q : ℚ, zeta2 7 = q) ∧ (∃ q : ℚ, zeta2 9 = q) ∧ (∃ q : ℚ, zeta2 11 = q))
+-- Zeta2Lean/Cited/Main.lean
+theorem Zeta2.zeta2_7_9_11_not_all_rational_unconditional : MainStatement
+
+-- MainStatement (Zeta2Lean/Statements.lean):
+--   (∀ s : ℕ, HasVolkenborn (halfPow s) (J s)) ∧
+--     ¬ ((∃ q : ℚ, zeta2 7 = q) ∧ (∃ q : ℚ, zeta2 9 = q) ∧ (∃ q : ℚ, zeta2 11 = q))
 ```
 
-`#print axioms` reports `[propext, Classical.choice, Quot.sound]`. There is no `sorry`, no `axiom`
-declaration and no `native_decide`. `leanchecker` replays the result in the kernel.
+`#print axioms` reports `[propext, Classical.choice, Quot.sound]`, with no hypotheses. There is no `sorry`,
+no `axiom` declaration and no `native_decide`. CI replays every module in the kernel with `leanchecker`.
+
+The development has two layers:
+* `Zeta2Lean/Main.lean` proves `zeta2_7_9_11_not_all_rational (hPNT : PNT_Stmt) (hAndrews : Andrews_Stmt)`,
+  with the prime number theorem and Andrews' transformation as explicit hypotheses.
+* `Zeta2Lean/Cited/` then proves both hypotheses:
+  * **PNT** (`PNT_proof : PNT_Stmt`, i.e. ψ(x)/x → 1 with Mathlib's `Chebyshev.psi`) comes from the
+    Wiener–Ikehara theorem. It is vendored under `Cited/Vendor/PNT/` from mathlib4 PRs #43046, #43233 and
+    #43238 (head 78e1b2bbd0). That code is derived from the PrimeNumberTheoremAnd project, keeps its
+    Apache-2.0 headers and authors, and was ported to this Mathlib pin.
+  * **Andrews** (`Andrews_proof : Andrews_Stmt`, Krattenthaler–Rivoal Théorème 8 over any field of
+    characteristic 0) is proved here, via the q = 1 Bailey chain and a polynomial Pfaff–Saalschütz
+    identity with a Zeilberger certificate.
 
 **Trusted definitions.** These are the only project definitions that occur in the statement
 (`Zeta2Lean/Defs.lean`):
@@ -26,15 +41,6 @@ declaration and no `native_decide`. `leanchecker` replays the result in the kern
 * `halfPow s x = (x + 1/2)^(-s)`;
 * `J s = limUnder …` (the first conjunct of the theorem proves that this limit exists);
 * `zeta2 s = J (s-1) / ((s-1) * 2^s)`.
-
-**Cited hypotheses.** These are explicit theorem parameters, never axioms:
-* `PNT_Stmt`: the prime number theorem, ψ(x)/x → 1, stated with Mathlib's `Chebyshev.psi`. It is proved in
-  Lean in the PrimeNumberTheoremAnd project but is not in Mathlib. Only the upper bound
-  ψ(x) ≤ (1+δ)x is used.
-* `Andrews_Stmt`: Andrews' multiple-series transformation of terminating very-well-poised hypergeometric
-  series (G. E. Andrews 1975, Thm 4; Krattenthaler–Rivoal, Mém. AMS 186 (2007), Théorème 8). It is stated
-  as an identity over any field of characteristic 0. It was checked in exact arithmetic at about 550
-  random parameter points, with m ≤ 8.
 
 **One cited identification, not formalised.** `zeta2 s` is defined through the Volkenborn integral. By
 Lai–Sprang–Zudilin (arXiv:2505.05005, Lemma 2.8) it equals the Kubota–Leopoldt value
@@ -73,11 +79,9 @@ The resulting exponent is 11 − 16 log 2 = −0.0904 < 0.
 * `Zeta2Lean/Defs.lean`, `Zeta2Lean/Statements.lean`: definitions and the 24 lemma statements (`Stmt_*`).
 * `Zeta2Lean/Assembly.lean`: the main theorem from the statements.
 * `Zeta2Lean/Proofs/*.lean`: one proof obligation per file.
-* `Zeta2Lean/Main.lean`: the final theorem and `#print axioms`.
-* `Zeta2Lean/Cited/`: **work in progress**, not imported by the root module. It proves the two cited
-  hypotheses (PNT through a vendored Wiener–Ikehara theorem from mathlib4 PR #43238, and Andrews
-  through the `q = 1` Bailey chain). `Cited/Main.lean` states
-  `zeta2_7_9_11_not_all_rational_unconditional : MainStatement`. See `BLUEPRINT.md` and `STATUS.md`.
+* `Zeta2Lean/Main.lean`: the theorem with the two hypotheses, and `#print axioms`.
+* `Zeta2Lean/Cited/`: proofs of the two hypotheses and `Cited/Main.lean`, which contains the unconditional
+  theorem. `Cited/Vendor/PNT/` is the vendored Wiener–Ikehara code (Apache-2.0). See `STATUS.md`.
 * `BLUEPRINT.md`: statement map and dependency graph. `STATUS.md`: per-file census.
 * `python/mirror.py`: an exact-arithmetic mirror of the definitions, with numerical checks of every statement.
 * `scripts/`: `check.sh` (elaborate one file), `build.sh`, `audit.sh`.
@@ -87,5 +91,5 @@ The resulting exponent is 11 − 16 log 2 = −0.0904 < 0.
 ```bash
 lake exe cache get
 lake build
-lake env lean Zeta2Lean/Main.lean   # prints the axioms of the main theorem
+lake env lean Zeta2Lean/Cited/Main.lean   # prints the axioms of the unconditional theorem
 ```
