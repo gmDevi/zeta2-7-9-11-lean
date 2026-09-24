@@ -270,3 +270,130 @@ Fixes made by the second audit:
 3. **LeibnizTermBound, DominantTerm, Nonvanishing.** The shorthand `Delta.x` / `DeltaFun.x` / `Digit.x` is
    now spelled out as the hypothesis fields `hD.x` / `hF.x` / `hG.x`. DominantTerm gets the (compiled)
    ℕ-rewrites `x + l - 1 = x + (l - 1)` and `2^m - 1 - 2^{m-1} = 2^{m-1} - 1`.
+
+## Discharging the cited hypotheses (`Zeta2Lean/Cited/`, blueprint 2026-09-24)
+
+Target (`Zeta2Lean/Cited/Main.lean`):
+
+```lean
+theorem Zeta2.zeta2_7_9_11_not_all_rational_unconditional : MainStatement :=
+  zeta2_7_9_11_not_all_rational PNT_proof Andrews_proof
+```
+
+`Defs.lean`, `Statements.lean`, `Assembly.lean`, `Main.lean` and `Proofs/` are **frozen**. The
+kernel-checked main theorem is reused as it is, and `PNT_Stmt` and `Andrews_Stmt` are proved as
+theorems. The root `Zeta2Lean.lean` does **not** import `Cited` yet, so the verified default build is
+unchanged. Build the new tree explicitly with `bash scripts/build.sh Zeta2Lean.Cited.Main`. Nothing
+changes in `lakefile.toml`, `lake-manifest.json` or `lean-toolchain`.
+
+### Architecture (same pattern as the main development)
+
+```
+Zeta2Lean/Cited/Defs.lean        Andrews-track definitions (BP, unitα/β, bw, bα, bβ, chainFactor, Achain,
+                                 Bchain) + proved API (rpoch_add/succ/succ', rpoch_ne_zero_of_le,
+                                 rpoch_negN_mul, rpoch_reflect, fact_ne, Fin.snoc lemmas on chains)
+Zeta2Lean/Cited/Statements.lean  one Stmt_X : Prop per sub-lemma (namespace Zeta2.Cited)
+Zeta2Lean/Cited/Assembly.lean    pnt_of_stmts, bpChain_of_stmts, andrews_of_bpChain, andrews_of_stmts
+                                 (complete, no gaps)
+Zeta2Lean/Cited/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X
+Zeta2Lean/Cited/Vendor/PNT/*.lean  Wiener–Ikehara, vendored from mathlib4 PRs (Apache 2.0, LICENSE there)
+Zeta2Lean/Cited/Main.lean        PNT_proof, Andrews_proof, the unconditional theorem, #print axioms
+python/cited_mirror.py           exact mirror (Lean semantics) + numerical checks of every new statement
+docs/cited/                      the Andrews scout's complete proof and checks (reference, not built)
+```
+
+### Statement map
+
+| Stmt | content | file | deps | status |
+|---|---|---|---|---|
+| `Stmt_WienerIkehara` | Wiener–Ikehara, unbundled: `f ≥ 0`, `∑_{i<n}|f i| ≤ C n`, `LSeries f` summable for `σ > 1`, `LSeries f s - A/(s-1)` extends continuously (`G`) to `re s ≥ 1` ⇒ `(∑_{n ≤ x} f n)/x → A` | `Proofs/WienerIkehara` (wrapper) ← `Vendor/PNT/WienerIkehara` ← `Vendor/PNT/SchwartzCompactSupport` | – (vendored imports) | wrapper complete; both vendored files are stubs |
+| `Stmt_PPS` | polynomial Pfaff–Saalschütz in every field: `∑_s C(M,s)(x)_s(y)_s(z-x-y)_{M-s}(z+s)_{2M-s} = (z-x)_M(z-y)_M(z+M)_M` | `Proofs/PfaffSaalschutz` | – | stub |
+| `Stmt_UnitPair` | `(unitα a, unitβ)` is a Bailey pair at every level (`a ≠ 0`, char 0) | `Proofs/UnitPair` | – | stub |
+| `Stmt_BaileyLemma` | one Bailey step preserves `BP` at level `n` (needs `BP` at all `j ≤ n`, `(1+a-ρ)_n, (1+a-σ)_n ≠ 0`) | `Proofs/BaileyLemma` | PPS | stub |
+| `Stmt_SumChainsSucc` | `∑_{chains (m+1) n} f = ∑_{j ≤ n} ∑_{i' ∈ chains m j} f (Fin.snoc i' j)` | `Proofs/ChainSum` | – | stub |
+| `Stmt_ChainStep` | `Achain`/`Bchain` for `m+1` pairs = one Bailey step applied to those for `m` pairs (`Fin.init`); base case from the unit pair | `Proofs/ChainStep` | SumChainsSucc | stub |
+| `Stmt_BPChain` | `(Achain, Bchain)` is a Bailey pair up to level `N` | `Assembly` (`bpChain_of_stmts`) | UnitPair, BaileyLemma, ChainStep | done |
+| `PNT_Stmt` | `ψ(x)/x → 1` | `Assembly` (`pnt_of_stmts`) | WienerIkehara | done |
+| `Andrews_Stmt` | KR Théorème 8 | `Assembly` (`andrews_of_bpChain`) | BPChain | done |
+
+Dependency graph:
+
+```
+PNT_Stmt ⇐ WienerIkehara   (Vendor/PNT/WienerIkehara ⇐ Vendor/PNT/SchwartzCompactSupport, by import)
+Andrews_Stmt ⇐ BPChain ⇐ UnitPair, BaileyLemma ⇐ PPS, ChainStep ⇐ SumChainsSucc
+```
+
+All seven open files (five Andrews stubs, two vendored files) can be worked on at the same time. The
+vendored `WienerIkehara` builds against the *stub* of `SchwartzCompactSupport`, which already exports the
+final statement of `SchwartzMap.dense_hasCompactSupport`.
+
+### PNT route: vendor Wiener–Ikehara from open mathlib4 PRs
+
+Source: PR #43238 at head `78e1b2bbd0d256081c926fccada84fd084653286` (fork `teorth/mathlib4`). It contains
+PR #43233 (`Mathlib/NumberTheory/LSeries/WienerIkehara.lean`) and PR #43046
+(`Mathlib/Analysis/Distribution/SchwartzSpace/CompactSupport.lean`). The PR base is master `a4c8ef0a69`
+(Lean v4.34.0-rc2), 181 commits and one week behind our pin `065356127b` (v4.35.0-rc2). The code is
+adapted from PrimeNumberTheoremAnd and is sorry-free upstream. The Mathlib inputs are already in our
+pin: `LFunctionResidueClassAux`, its continuity on `re s ≥ 1` (non-vanishing of `ζ` on `re s = 1`),
+`eqOn_LFunctionResidueClassAux`, and Chebyshev's `ψ x ≤ (log 4 + 4) x`. The glue from `WeakPNT.lean`
+(about 40 lines) is `Cited/Assembly.lean`, with Wiener–Ikehara as a hypothesis.
+
+Vendoring policy:
+* Copy the upstream text verbatim. The only header edits: delete `module`; replace the imports by
+  `import Mathlib` (plus the other vendored file); delete `@[expose] public section`.
+* Keep every declaration name. None exists in our pin.
+* Keep the upstream copyright headers and the Apache-2.0 `LICENSE` (copied from Mathlib).
+* Fix drift errors locally and list every deviation under "Porting notes" in the file's docstring.
+
+Rejected alternatives:
+* Depending on PrimeNumberTheoremAnd: it pins Lean v4.33.1 and Mathlib `0df444a360`, with
+  LeanArchitect, leancert and PrimeCert.
+* Porting PNT+ itself: about 3,170 lines across 1,100 commits.
+* Newman's proof from scratch.
+
+**Future swap.** Once Mathlib contains the PRs and the project deliberately bumps Mathlib, delete
+`Cited/Vendor/`. `Proofs/WienerIkehara.lean` then imports `Mathlib.NumberTheory.LSeries.WienerIkehara`
+unchanged.
+
+### Andrews route: the `q = 1` Bailey chain
+
+The route is the one in `Cited/Defs.lean` (docstring). A Bailey pair is taken in the multiplied form
+`(1+a)_{2n} β_n = ∑_r α_r (1+a+n+r)_{n-r}/(n-r)!`. That form never divides by `(1+a)_k`, which
+`Andrews_Stmt` does not assume non-zero. The only classical identity needed is terminating
+Pfaff–Saalschütz in polynomial form. It is proved with a Zeilberger certificate in any commutative ring
+and then transferred through `K[X]`. No Whipple, Dougall or WZ proof of the 8-fold sum is needed.
+
+**Truth check (Lean).** The Andrews scout's complete proof (`docs/cited/AndrewsScout.lean`, 744 lines)
+was re-targeted at the `Cited` definitions in an architect scratch file, now deleted. It proves
+`Stmt_PPS`, `Stmt_UnitPair`, `Stmt_BaileyLemma`, `Stmt_SumChainsSucc`, `Stmt_ChainStep` and
+`Stmt_BPChain` exactly as stated. With `Cited/Assembly.lean` it gives `Andrews_Stmt`. Every theorem
+there has axioms `[propext, Classical.choice, Quot.sound]`, and so do `pnt_of_stmts` and
+`andrews_of_stmts`.
+
+**Truth check (numerical).** `python3 python/cited_mirror.py` runs 6340 exact checks with Lean semantics,
+all passing. It covers:
+* PPS over ℚ and over GF(p);
+* unit pair, Bailey lemma, chain step and `BPChain`, at generic and degenerate parameters and with
+  vanishing denominators;
+* `Andrews_Stmt` and the assembly identity `LHS = N!(1+a)_N Bchain_N`;
+* the `f = Λ` instance of `Stmt_WienerIkehara`: the Chebyshev bound, ψ(x)/x, `LSeries Λ = -ζ'/ζ` at
+  s = 2, 3, 4, and `G(1⁺) = -γ` (mpmath).
+
+A mutation test confirmed that the checks detect wrong definitions.
+
+### Workflow for provers (Cited)
+
+* Elaborate: `bash scripts/check.sh Zeta2Lean/Cited/Proofs/Foo.lean`.
+* Build: `bash scripts/build.sh Zeta2Lean.Cited.Proofs.Foo`. For a vendored file:
+  `bash scripts/build.sh Zeta2Lean.Cited.Vendor.PNT.Foo`.
+* Never edit `Cited/Defs.lean`, `Cited/Statements.lean` or `Cited/Assembly.lean`. Report statement
+  problems to the architect.
+* Do not redeclare the proved API of `Cited/Defs.lean`.
+* Put helpers in the file's own namespace (`Zeta2.Cited.PPS`, `.UnitPair`, `.Bailey`, `.ChainSum`,
+  `.ChainStep`) or make them `private`. `Cited/Main.lean` imports every proof file.
+* Integration, once every file is complete:
+  * `bash scripts/build.sh Zeta2Lean.Cited.Main` must print
+    `[propext, Classical.choice, Quot.sound]` for all three theorems.
+  * Then add `import Zeta2Lean.Cited.Main` to the root `Zeta2Lean.lean` and rebuild `Zeta2Lean`.
+  * Finally, drop the `grep -v '^Zeta2Lean/Cited/'` from the CI census and add the unconditional
+    theorem to the CI axiom check.

@@ -1,0 +1,25 @@
+# python/cited_mirror.py, full run (Python 3.12, mpmath 1.3.0), 2026-09-24, exit 0
+API lemmas: 600 checks, 0 failures
+Stmt_PPS: 1150 checks, 0 failures
+Stmt_UnitPair: 352 checks, 0 failures
+Stmt_BaileyLemma: 687 checks, 0 failures
+Stmt_SumChainsSucc: 60 checks, 0 failures
+Stmt_ChainStep: 2640 checks, 0 failures
+Stmt_BPChain / Andrews_Stmt: 836 checks (486 BP levels, 175 Andrews points, 26 with (1+a)_(2N) = 0), 0 failures
+  bound: max_N ψ(N-1)/N = 1.030729 ≤ log 4 + 4 = 5.386294 (N ≤ 2000000)
+  ψ(10)/10 = 0.783201
+  ψ(100)/100 = 0.940453
+  ψ(1000)/1000 = 0.996681
+  ψ(10000)/10000 = 1.001340
+  ψ(100000)/100000 = 1.000516
+  ψ(1000000)/1000000 = 0.999587
+  ψ(2000000)/2000000 = 1.000058
+  LSeries Λ 2 = 0.569960993, -ζ'(2)/ζ(2) = 0.569960993
+  s = 2: LSeries Λ = 0.569960993, -ζ'/ζ = 0.569960993
+  s = 3: LSeries Λ = 0.164822682, -ζ'/ζ = 0.164822682
+  s = 4: LSeries Λ = 0.063669765, -ζ'/ζ = 0.063669765
+  G(1 + 1e-12) = -0.577215664901 (-γ = -0.577215664902)
+  G(1+it) finite at t = 1, 5, 14.134725, 30
+  Mertens: M(1000000) = 212, (∑_(n ≤ x) (1 + μ n)) / x = 1.000213
+PNT track: 15 checks, 0 failures
+TOTAL: 6340 checks, 0 failures

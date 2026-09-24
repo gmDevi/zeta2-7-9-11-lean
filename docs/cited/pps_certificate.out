@@ -1,0 +1,5 @@
+﻿middle case: remainder after dividing by the binomial relation: 0
+middle case: lambda = P*X*Y*Z*(-t + x + y - z)*(2*t + 2*u + z + 2)*(2*t + 2*u + z + 3)
+case s = 0 residual: 0
+case s = M+1 residual: 0
+numeric failures: 0

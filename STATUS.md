@@ -19,6 +19,43 @@ theorem Zeta2.zeta2_7_9_11_not_all_rational (hPNT : PNT_Stmt) (hAndrews : Andrew
       ¬ ((∃ q : ℚ, zeta2 7 = q) ∧ (∃ q : ℚ, zeta2 9 = q) ∧ (∃ q : ℚ, zeta2 11 = q))
 ```
 
+## Discharge of the cited hypotheses (in progress, blueprint 2026-09-24)
+
+`Zeta2Lean/Cited/` proves `PNT_Stmt` and `Andrews_Stmt` as theorems. It uses the same pattern as the
+main development: `Cited/Defs`, `Cited/Statements`, `Cited/Assembly` (complete), `Cited/Proofs/*`
+(stubs), `Cited/Vendor/PNT/*` (vendored-file stubs) and `Cited/Main`. The target is
+`Zeta2.zeta2_7_9_11_not_all_rational_unconditional : MainStatement`. Details are in `BLUEPRINT.md`,
+"Discharging the cited hypotheses".
+
+* Nothing frozen changed: `Defs`, `Statements`, `Assembly`, `Main`, `Proofs/`, the lakefile, the
+  manifest and the toolchain are untouched.
+* The root `Zeta2Lean.lean` does not import `Cited`, so the verified default build is unchanged.
+* `bash scripts/build.sh Zeta2Lean.Cited.Main` is green. It prints
+  `[propext, sorryAx, Classical.choice, Quot.sound]` for `PNT_proof`, `Andrews_proof` and the
+  unconditional theorem while the stubs below remain.
+* `pnt_of_stmts`, `andrews_of_stmts` and `WienerIkehara_proof` are complete. So is the whole chain
+  from the sub-lemma statements to `MainStatement`.
+* Every new statement is checked two ways:
+  * in Lean, the Andrews scout's complete proof, re-targeted at these statements, proves all of them;
+  * numerically, `python/cited_mirror.py` runs 6340 checks with 0 failures.
+
+| file | theorem : Stmt | deps | status |
+|---|---|---|---|
+| `Cited/Vendor/PNT/SchwartzCompactSupport` | `SchwartzMap.dense_hasCompactSupport` | – | stub (port verbatim from PR #43238) |
+| `Cited/Vendor/PNT/WienerIkehara` | `WienerIkehara.tendsto_sum_div` | (import) SchwartzCompactSupport | stub (port verbatim from PR #43238) |
+| `Cited/Proofs/WienerIkehara` | `WienerIkehara_proof : Stmt_WienerIkehara` | (import) vendored WI | done (wrapper) |
+| `Cited/Proofs/PfaffSaalschutz` | `PPS_proof : Stmt_PPS` | – | stub (reference proof in `docs/cited/`) |
+| `Cited/Proofs/UnitPair` | `UnitPair_proof : Stmt_UnitPair` | – | stub (reference proof in `docs/cited/`) |
+| `Cited/Proofs/BaileyLemma` | `BaileyLemma_proof : Stmt_PPS → Stmt_BaileyLemma` | PPS | stub (reference proof in `docs/cited/`) |
+| `Cited/Proofs/ChainSum` | `SumChainsSucc_proof : Stmt_SumChainsSucc` | – | stub (reference proof in `docs/cited/`) |
+| `Cited/Proofs/ChainStep` | `ChainStep_proof : Stmt_SumChainsSucc → Stmt_ChainStep` | SumChainsSucc | stub (reference proof in `docs/cited/`) |
+| `Cited/Assembly` | `pnt_of_stmts`, `bpChain_of_stmts`, `andrews_of_bpChain`, `andrews_of_stmts` | – | done |
+| `Cited/Main` | `PNT_proof`, `Andrews_proof`, `zeta2_7_9_11_not_all_rational_unconditional` | all | done (wiring) |
+
+`scripts/audit.sh` now lists these seven stubs in its sorry census. The CI census step excludes
+`Zeta2Lean/Cited/` from the sorry check until the tree is complete and imported by the root. It still
+scans `Cited/` for forbidden constructs, and finds none.
+
 ## What the main theorem depends on now
 
 1. **Lean kernel + Mathlib** (`v4.35.0-rc2`). Axioms: `propext`, `Classical.choice`, `Quot.sound` only.
@@ -177,9 +214,9 @@ Reuse of the Lean development:
 
 ## Possible next steps (not required for the stated theorem)
 
-* Discharge `PNT_Stmt` by importing or porting PrimeNumberTheoremAnd's proof. Only the upper bound
-  `ψ(x) ≤ (1+δ)x` is used.
-* Prove `Andrews_Stmt`, by iterated Whipple ₇F₆→₄F₃ plus Pfaff–Saalschütz, or by WZ-style certificates for the
-  m = 8 specialisation only. This is a separate project.
+* Discharge `PNT_Stmt` and `Andrews_Stmt`: **in progress** in `Zeta2Lean/Cited/`, as described in the
+  section above. PNT comes from the Wiener–Ikehara theorem, vendored from mathlib4 PR #43238.
+  `Andrews_Stmt` uses the `q = 1` Bailey chain with a polynomial Pfaff–Saalschütz identity, so no
+  Whipple is needed.
 * Formalise LSZ Lemma 2.8 once a Kubota–Leopoldt ζ_p exists in Mathlib.
 * Cosmetic: silence the style linters (long lines, `show` → `change`).

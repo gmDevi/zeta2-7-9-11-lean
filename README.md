@@ -74,6 +74,10 @@ The resulting exponent is 11 − 16 log 2 = −0.0904 < 0.
 * `Zeta2Lean/Assembly.lean`: the main theorem from the statements.
 * `Zeta2Lean/Proofs/*.lean`: one proof obligation per file.
 * `Zeta2Lean/Main.lean`: the final theorem and `#print axioms`.
+* `Zeta2Lean/Cited/`: **work in progress**, not imported by the root module. It proves the two cited
+  hypotheses (PNT through a vendored Wiener–Ikehara theorem from mathlib4 PR #43238, and Andrews
+  through the `q = 1` Bailey chain). `Cited/Main.lean` states
+  `zeta2_7_9_11_not_all_rational_unconditional : MainStatement`. See `BLUEPRINT.md` and `STATUS.md`.
 * `BLUEPRINT.md`: statement map and dependency graph. `STATUS.md`: per-file census.
 * `python/mirror.py`: an exact-arithmetic mirror of the definitions, with numerical checks of every statement.
 * `scripts/`: `check.sh` (elaborate one file), `build.sh`, `audit.sh`.
