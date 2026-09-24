@@ -175,6 +175,12 @@ checks. The full-run log is `python/mirror_full.log` (0 checks failed; `v₂(S_{
   contains the known-irrational ζ₂(5)). (10, 3) would give Lai's {7, 9, 11, 13} again with margin −0.86,
   but its L5 case analysis (binomials C(10, ·)) is only numerical/sketch (proof.md §11). (6, 3) would give
   {7, 9} but has exponent +0.68, so it fails; no (a, j) gives a new pair.
+* In the Lean development, (a, j) = (8, 3) is hard-wired: `Gser` has `Psi^8` and `2^{16n}`; `integrand`
+  has `(i)₃`; the `Z` constants; `Fser` / `chains 8`; and the L5 slack count with `v₂ C(8, ·)`. The
+  formal conclusion is exactly `¬ (ζ₂(7) ∈ ℚ ∧ ζ₂(9) ∈ ℚ ∧ ζ₂(11) ∈ ℚ)`, and `Stmt_Criterion` (one
+  sequence of forms) can conclude nothing stronger. For another (a, j):
+  - JConvergence, Translation, Criterion, DeltaCalculus, DeltaFunctions and Digits carry over unchanged;
+  - the other files would need re-parametrised definitions.
 
 ## Audit (adversarial faithfulness check, 2026-09-24)
 
@@ -207,3 +213,58 @@ re-tested with code written independently of `mirror.py` (`python/audit_independ
 Changes made by the audit: `mem_chains`, `chainPrev_le` added (proved) to `Defs.lean`; two
 non-existent lemma names in hints fixed (`Nat.eq_one_of_self_dvd` in DenomL2b, `padicValRat.prod` /
 `mem_chains` in KummerFJ); chain-API pointers added to ClosedFormFJ and DenomL2c.
+
+## Second audit (Lean-soundness lens, 2026-09-24)
+
+Independent of the audit above; looked for Lean-specific ways the formal theorem could be false,
+vacuous or unprovable. **No unsound, vacuous or unprovable statement was found.** `Defs.lean`,
+`Statements.lean`, `Assembly.lean` and `Main.lean` are unchanged.
+
+* **Junk values.** Every `⁻¹` in `PowerSeries ℚ` (Mathlib: `φ⁻¹ = 0` iff constant coefficient `0`) has a
+  non-zero constant term (`Psi`, `Tser`, `Pser`, `Fser`, `hcoef`). The one exception is `Rser`, where
+  `PF.series` assumes `y + j ≠ 0`. Every rational/2-adic division is by a non-zero quantity: `halfPow`,
+  `Ahalf`, `integrand`, `zeta2` at 7, 9, 11, and `FJ0` for `ℓ ≥ 1`. `Dn` is an exact ℕ-division
+  (`Dn_mul_Phi`). Every ℕ-subtraction is guarded by the hypotheses of the statement that uses it (`8-i`,
+  `n-k`, `k-ℓ`, `ℓ-1`, `n-ℓ-J_i`, `J_i - chainPrev`, `x+l-1`, `2^m-1-2^{m-1}`, `3-γ-β`, `2^m-2m` for
+  `m ≥ 2`). Casts go `ℕ → ℚ` before any subtraction. `zpow` is only used with base 2 in `ℝ`. `limUnder`
+  (`J`) is certified by the first conjunct of the theorem; `Sn` is unused. Ranges match proof.md
+  (`range (n+1)` = `0..n`, `Icc 1 8`, `Icc ℓ n`, `range k` = `ℓ₀ < k`). `dn 0 = 1` (`Nat.lcmUpto n =
+  (Icc 1 n).lcm id`).
+* **No auto-bound implicits.** The lakefile keeps `autoImplicit` on for single letters. `#check
+  (Stmt_X : Prop)` succeeds for all 24 statements, `PNT_Stmt`, `Andrews_Stmt` and `MainStatement`.
+  Every definition has exactly its intended arguments.
+* **Cited hypotheses are true, so the theorem is not vacuous.**
+  - `PNT_Stmt`: `Chebyshev.psi x = ∑_{n ∈ Ioc 0 ⌊x⌋₊} Λ n`, so this is exactly PNT.
+  - `Andrews_Stmt`: every denominator on either side is `a`, a factorial, or `(x)_κ` / `(x)_{i_k}` with
+    `κ, i_k ≤ N`. Since `(x)_κ ∣ (x)_N`, the hypotheses make every one of them non-zero. So the Lean
+    statement is exactly the rational-function identity of KR Thm 8, evaluated where it is defined; there
+    is no `x/0 = 0` loophole.
+  - Re-tested with a new literal transcription of the Lean statement (scratch `lens2.py`, not
+    derived from `mirror.py` / `audit_independent.py`): 676 admissible random points (generic,
+    half-integer, `a ∈ ℤ_{<0}`, `b_k = c_k`; m ≤ 3, N ≤ 4) plus 30 points of the m = 8 specialisation.
+    Zero failures.
+  - The same script also confirms `AndrewsApplied` (30 random rational ε, n ≤ 5), `FJClosed` (1001
+    chains), `ResidueForm` (n ≤ 6), and `v₂(R_M(integrand)) = target m` for m = 2, 3 and M = m..m+3.
+    All are exact.
+  - LSZ Lemma 2.8 (re-read in `lsz.txt`) is purely multiplicative: `J_{s-1} = (s-1) 2^s ζ₂(s)`.
+* **Assembly / axioms.** `#print axioms`: `main_of_stmts` and `linear_form_zeta` →
+  `[propext, Classical.choice, Quot.sound]`; `zeta2_7_9_11_not_all_rational` → the same plus `sorryAx`
+  (stubs only). There are no axiom declarations.
+* **Hints.** All ≈ 250 Mathlib names quoted in the 24 stub docstrings were `#check`ed and exist in this
+  Mathlib, with the quoted signatures. The only failures are math symbols, the field shorthand below, and
+  the deliberately negative mention of `padicValRat.prod`. `ℚ_[2]` has `IsUltrametricDist`,
+  `CompleteSpace` and `NormedField` instances, so the ultrametric hints apply.
+
+Fixes made by the second audit:
+1. **AndrewsApplied (usability, would have blocked the prover).** Neither `CharZero (FractionRing ℚ⟦X⟧)`
+   nor `CharZero (LaurentSeries ℚ)` (nor `CharZero ℚ⟦X⟧`) is found by instance search, and
+   `Andrews_Stmt` requires `[CharZero K]`. The docstring now gives a compiled recipe:
+   `charZero_of_injective_algebraMap (algebraMap ℚ K).injective`, a specialisation
+   `hA (FractionRing (PowerSeries ℚ)) 8`, and a compiled lemma transporting power-series inverses into `K`.
+2. **`scripts/audit.sh`.** The census missed declarations behind modifiers or attributes (`private axiom`,
+   `@[simp] axiom`, `protected axiom`, `noncomputable opaque`, `private unsafe def`) and
+   `Lean.trustCompiler`. The regex is hardened and was tested on synthetic cases. `#print axioms` in
+   `Main.lean` remains the definitive check.
+3. **LeibnizTermBound, DominantTerm, Nonvanishing.** The shorthand `Delta.x` / `DeltaFun.x` / `Digit.x` is
+   now spelled out as the hypothesis fields `hD.x` / `hF.x` / `hG.x`. DominantTerm gets the (compiled)
+   ℕ-rewrites `x + l - 1 = x + (l - 1)` and `2^m - 1 - 2^{m-1} = 2^{m-1} - 1`.

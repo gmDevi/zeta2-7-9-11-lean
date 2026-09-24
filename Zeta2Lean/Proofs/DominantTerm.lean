@@ -23,7 +23,12 @@ import Zeta2Lean.Statements
 and `2^m - 1` in base 2 carries), so `‖Φ(x)‖ ≤ 1/2` (in fact `≤ 2^{-6}`).  Ultrametric:
 `‖∑_{x<2^m} Φ(x)‖ = 1`, hence `‖volkenbornSum domTerm m‖ = 2^m · 2^{-(32n+14-10m)} = 2^{-target m}`.
 
-**Lean hints.** `Stmt_Delta` (`mul`, `ofAll`, `mono`, `smul`), `Stmt_DeltaFun` (`binom`,
+**Lean hints.** Above, `Delta.x`, `DeltaFun.x`, `Digit.x` denote the fields `hD.x`, `hF.x`, `hG.x`
+of the hypotheses `hD : Stmt_Delta`, `hF : Stmt_DeltaFun`, `hG : Stmt_Digit`.
+`Yl n l x` contains `Nat.choose (x + l - 1) (l - 1)`; rewrite `x + l - 1 = x + (l - 1)`
+(`Nat.add_sub_assoc`, `1 ≤ 2^(m-1)`) before applying `hF.binom (l - 1) (l - 1)`, and note
+`2^m - 1 - 2^(m-1) = 2^(m-1) - 1` (`Nat.pow_succ`, `omega` after `2^m = 2 * 2^(m-1)`).
+`Stmt_Delta` (`mul`, `ofAll`, `mono`, `smul`), `Stmt_DeltaFun` (`binom`,
 `binomSq`, `hcoefInt`, `hcoefDelta`), `Stmt_Digit` (`fact`, `dom`);
 `padicValNat_choose` (Kummer, carries), `Choose.lucas_theorem`, `Nat.Prime.dvd_choose_pow`,
 `Padic.norm_natCast_eq_one_iff`, `Padic.norm_eq_of_norm_add_lt_right`,

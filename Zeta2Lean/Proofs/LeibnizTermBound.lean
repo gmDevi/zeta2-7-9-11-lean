@@ -32,7 +32,10 @@ and both right-hand sides simplify to `32n + 13 - 11m + βm + c + #` (proof.md �
 Since `leibTerm` has a sign and the constants are exact, it is convenient to prove the bound in
 the form `‖K‖ ≤ 2^{-e}` with `e` the displayed lower bound minus `Δ(Φ)`.
 
-**Lean hints.** `Stmt_Delta` fields `smulAll`, `mulAll`, `sumAll`, `monoAll`;
+**Lean hints.** Above, `Delta.x`, `DeltaFun.x`, `Digit.x` denote the fields `hD.x`, `hF.x`, `hG.x`
+of the hypotheses `hD : Stmt_Delta`, `hF : Stmt_DeltaFun`, `hG : Stmt_Digit` (e.g.
+`hF.binom j N : DeltaAll (-(Nat.log 2 N : ℤ)) (fun x => ((Nat.choose (x + j) N : ℕ) : ℚ_[2]))`).
+`Stmt_Delta` fields `smulAll`, `mulAll`, `sumAll`, `monoAll`;
 `Stmt_DeltaFun` fields `binom`, `hcoefInt`, `hcoefDelta`; `Stmt_Digit` fields;
 `Padic.norm_p_pow`, `Padic.norm_natCast_eq_one_iff`, `Padic.norm_eq_zpow_neg_valuation`
 (or directly `‖(2:ℚ_[2])^k * (odd : ℚ_[2])‖ = 2^{-k}`);

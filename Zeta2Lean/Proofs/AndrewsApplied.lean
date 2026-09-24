@@ -31,6 +31,26 @@ domain) or `K := LaurentSeries ℚ` (Mathlib has `Field (LaurentSeries ℚ)`, an
 through the injective ring hom `φ : ℚ⟦X⟧ → K`; for units, `φ (u⁻¹) = (φ u)⁻¹`
 (from `u * u⁻¹ = 1`); `φ (psPoch c d k) = rpoch (φ (C c + C d X)) k` after reindexing
 (`psPoch c d k = ∏_{j<k} ((C c + C d X) + j)`).
+**`CharZero K` is NOT found by instance search** for either choice (nor is `CharZero ℚ⟦X⟧`), and
+`Andrews_Stmt` needs it.  Supply it by hand; the following were checked to compile in this Mathlib:
+```
+have : CharZero (FractionRing (PowerSeries ℚ)) :=
+  charZero_of_injective_algebraMap (algebraMap ℚ (FractionRing (PowerSeries ℚ))).injective
+-- or, for Laurent series:
+--   charZero_of_injective_algebraMap (algebraMap ℚ (LaurentSeries ℚ)).injective
+have := hA (FractionRing (PowerSeries ℚ)) 8   -- specialises fine once the instance is in scope
+
+example (φ : PowerSeries ℚ) (h : constantCoeff φ ≠ 0) :
+    algebraMap (PowerSeries ℚ) (FractionRing (PowerSeries ℚ)) φ⁻¹ =
+      (algebraMap (PowerSeries ℚ) (FractionRing (PowerSeries ℚ)) φ)⁻¹ :=
+  eq_inv_of_mul_eq_one_left (by rw [← map_mul, PowerSeries.inv_mul_cancel _ h, map_one])
+```
+(`IsFractionRing.injective (PowerSeries ℚ) (FractionRing (PowerSeries ℚ))` gives injectivity of
+`φ = algebraMap (PowerSeries ℚ) (FractionRing (PowerSeries ℚ))`.)  Note that in `K` the factors
+`a + j = -n + 2ℓ + j - 2ε` may have zero constant term (they are non-zero because of the `ε`-term,
+which is what the hypotheses `a ≠ 0`, `(a)_N ≠ 0` of `Andrews_Stmt` need).  After the cancellations
+above, `a` survives only in `(a+2κ)/a` and in the prefactor `(N+1)(a+N)/a`, and it cancels against
+the `-a` of Step 2, so the final identity is between images of genuine power series.
 
 **Lean hints.** `IsFractionRing.injective`, `algebraMap`, `map_prod`, `map_pow`, `map_mul`,
 `PowerSeries.mul_inv_cancel`, `PowerSeries.constantCoeff_inv`, `eq_inv_of_mul_eq_one_left`,

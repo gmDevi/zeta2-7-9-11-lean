@@ -28,7 +28,10 @@ for `m ≥ 2` and any `I` with `HasVolkenborn (integrand (2^m-1)) I`, `‖I‖ =
 5. The norm is continuous and eventually constant along the convergent sequence, so `‖I‖ = 2^{-t}`
    (`Filter.Tendsto.norm`, `tendsto_nhds_unique`, `tendsto_const_nhds`, `Filter.EventuallyEq`).
 
-**Lean hints.** `volkenbornSum_add`, `volkenbornSum_sum` (in `Defs.lean`), `Finset.sum_erase_add`,
+**Lean hints.** Above, `Delta.x` denotes the field `hD.x` of `hD : Stmt_Delta`; the other
+hypotheses are `hL : Stmt_Leibniz`, `hB : Stmt_LeibTermBound`, `hDom : Stmt_L5Dom`.  The side
+conditions of `hB` (`γ ≤ 1`, `γ + β ≤ 3`) follow from `γ ∈ range 2`, `β ∈ range (4 - γ)` in `hL`.
+`volkenbornSum_add`, `volkenbornSum_sum` (in `Defs.lean`), `Finset.sum_erase_add`,
 `Finset.add_sum_erase`, `Finset.sum_sigma'` (flatten the triple sum into a `Finset (Σ …)` or use
 nested `Finset.sum_congr`), `Finsupp.single_apply`, `Finset.mem_finsuppAntidiag`,
 `Finsupp.support_single`, `Filter.Tendsto.norm`, `tendsto_nhds_unique`,
