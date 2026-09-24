@@ -25,7 +25,8 @@ theorem Zeta2.zeta2_7_9_11_not_all_rational (hPNT : PNT_Stmt) (hAndrews : Andrew
   `J 6, J 8, J 10` is the mathematical theorem.
 
 `#print axioms` (end of `Main.lean`) should show only `propext, Classical.choice, Quot.sound` once
-the proof files are complete. At present it also shows `sorryAx`, which comes from the stubs.
+the proof files are complete. Since prove round 1 (2026-09-24) it does: all 24 proof files are complete. See
+`STATUS.md` for the current census.
 
 ## Cited hypotheses (theorem parameters, never axioms)
 
@@ -44,7 +45,8 @@ Zeta2Lean/Defs.lean        all definitions + a few proved API lemmas (volkenborn
 Zeta2Lean/Statements.lean  one Stmt_X : Prop per lemma (structures with named fields for Δ-calculus etc.)
 Zeta2Lean/Assembly.lean    main_of_stmts : Stmt_JConv → Stmt_L1 → Stmt_L2cor → Stmt_L4 → Stmt_L5 →
                            Stmt_Asymptotic → Stmt_Criterion → PNT_Stmt → MainStatement   (complete, no sorry)
-Zeta2Lean/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X := by sorry   (24 files)
+Zeta2Lean/Proofs/*.lean    theorem X_proof (deps as hypotheses) : Stmt_X   (24 files; stubs in the blueprint,
+                           all proved in prove round 1, see STATUS.md)
 Zeta2Lean/Main.lean        wires everything; #print axioms
 python/mirror.py           exact-arithmetic mirror of Defs.lean + numerical checks of every Stmt
 python/audit_independent.py, python/jcheck_bernoulli.py   independent re-implementation (audit, see below)
