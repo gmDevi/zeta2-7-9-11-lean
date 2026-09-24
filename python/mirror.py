@@ -690,13 +690,16 @@ def main():
 
     # ------------------------------------------------------------------ Stmt_L4
     section("Stmt_L4 with proof.md constants C = 3.4e8, A = 2")
-    worst = 0.0
+    worst = -1e9
     for n in list(range(0, 41 if not QUICK else 21)) + ([60, 100] if not QUICK else []):
+        bound = F(340000000) * (n + 1) ** 2 * F(2) ** (16 * n)      # archBound 3.4e8 2 n, exactly
         for nm, val in (("rho0", rho0(n)), ("Z7", Z7(n)), ("Z9", Z9(n)), ("Z11", Z11(n))):
-            ratio = abs(float(val)) / archBound(3.4e8, 2, n) if val != 0 else 0.0
-            worst = max(worst, ratio)
-            check("L4 %s n=%d" % (nm, n), ratio <= 1.0)
-    print("  max |coef| / (3.4e8 (n+1)^2 2^{16n}) = %.3g" % worst)
+            check("L4 %s n=%d" % (nm, n), abs(val) <= bound)
+            if val != 0:
+                lr = (math.log(abs(val.numerator)) - math.log(val.denominator)
+                      - math.log(bound.numerator) + math.log(bound.denominator))
+                worst = max(worst, lr)
+    print("  max |coef| / (3.4e8 (n+1)^2 2^{16n}) = %.3g" % math.exp(worst))
 
     # ------------------------------------------------------------------ Stmt_Asymptotic (numerical illustration)
     section("Stmt_Asymptotic: log[D_n archBound(3.4e8,2,n) 2^{-target}] along n = 2^m - 1 (exact psi/theta)")

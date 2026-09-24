@@ -1,0 +1,83 @@
+
+== rcoef (Lean Gser definition) vs independent log-derivative formula (lf.py)
+  rcoef, rho0, Z7/9/11 agree with lf.py for n = 0..15
+  n=0: S_0 = 20643840 zeta2(11); n=1: rho0 = 14155776, Z = (-849346560, 21139292160, 52848230400)
+
+== Stmt_PF: poly (Rnum = PFpoly) and series (Rser = sum r (y+k+eps)^-i)
+  PF.poly verified n <= 6; PF.series verified at random y, n <= 5
+
+== Stmt_CoeffVanish: symmetry, c1 = 0, c_even = 0
+  verified for n <= 30
+
+== J_s: cache (zeta2_K17000.json) vs Riemann sums of halfPow; zeta2 normalisation
+  s=6 level N=8: v2(R_N - J_s) = 24  (Stmt_JConv / Lai 2.4: grows ~ N)
+  s=6 level N=12: v2(R_N - J_s) = 32  (Stmt_JConv / Lai 2.4: grows ~ N)
+  s=8 level N=8: v2(R_N - J_s) = 28  (Stmt_JConv / Lai 2.4: grows ~ N)
+  s=8 level N=12: v2(R_N - J_s) = 36  (Stmt_JConv / Lai 2.4: grows ~ N)
+  s=10 level N=8: v2(R_N - J_s) = 28  (Stmt_JConv / Lai 2.4: grows ~ N)
+  s=10 level N=12: v2(R_N - J_s) = 36  (Stmt_JConv / Lai 2.4: grows ~ N)
+  Translation s=6 k=3: v2(R_12 - (J_s - s A_k)) = 20
+  Translation s=8 k=5: v2(R_12 - (J_s - s A_k)) = 24
+
+== Stmt_L1: Riemann sums of integrand -> rho0 + 60 c3 J6 + 210 c5 J8 + 504 c7 J10
+  n=0: v2(S_n) = 14, v2(R_11 - S_n) = 38
+  n=1: v2(S_n) = 35, v2(R_11 - S_n) = 57
+  n=2: v2(S_n) = 65, v2(R_11 - S_n) = 85
+  n=3: v2(S_n) = 88, v2(R_11 - S_n) = 108
+
+== Stmt_BlockF, Stmt_L2a, Stmt_L2b (integrality)
+  verified for n <= 20
+
+== Stmt_ResidueForm, Stmt_AndrewsApplied, Stmt_FJClosed, Stmt_FJKummer, Stmt_L2c, Stmt_L2cor
+  ResidueForm verified n <= 8
+  AndrewsApplied (as truncated power series mod eps^9) and FJClosed verified n <= 5
+  FJKummer: 30000 random (critical-biased) samples, min v_p = -4 (>= -4 required)
+  L2c and L2cor verified n <= 60
+
+== Andrews_Stmt (cited) at random rational parameters, m <= 3, N <= 5
+  Andrews identity holds exactly in 139 random rational instances
+
+== Stmt_L4 with proof.md constants C = 3.4e8, A = 2
+  max |coef| / (3.4e8 (n+1)^2 2^{16n}) = 0.0607
+
+== Stmt_Asymptotic: log[D_n archBound(3.4e8,2,n) 2^{-target}] along n = 2^m - 1 (exact psi/theta)
+  m= 2 n=       3  log D_n/n = 7.16704  log(expr) =        16.19  per n: 5.39742
+  m= 5 n=      31  log D_n/n = 11.68544  log(expr) =        73.44  per n: 2.36911
+  m= 8 n=     255  log D_n/n = 10.95517  log(expr) =        47.55  per n: 0.18649
+  m=11 n=    2047  log D_n/n = 11.01566  log(expr) =       -43.85  per n: -0.02142
+  m=14 n=   16383  log D_n/n = 11.03621  log(expr) =      -750.95  per n: -0.04584
+  m=17 n=  131071  log D_n/n = 11.00847  log(expr) =    -10569.92  per n: -0.08064
+  m=18 n=  262143  log D_n/n = 11.00028  log(expr) =    -23439.97  per n: -0.08942
+  m=19 n=  524287  log D_n/n = 11.00733  log(expr) =    -43345.53  per n: -0.08268
+  m=20 n= 1048575  log D_n/n = 11.00088  log(expr) =    -93627.81  per n: -0.08929
+  m=21 n= 2097151  log D_n/n = 11.00201  log(expr) =   -185065.54  per n: -0.08825
+  asymptotic slope 11 - 16 log 2 = -0.09035
+
+== Stmt_DeltaFun (finite ranges)
+  binom/binomSq (j<=5, N<=9, k<300) and hcoef (n<=3, beta<=3, x<200) verified
+
+== Stmt_Digit
+  verified m <= 14 (other: m <= 12)
+
+== Stmt_Leibniz: integrand n x = sum leibTerm
+  verified n <= 5, x <= 5
+
+== Stmt_LeibTermBound, Stmt_L5Dom (finite ranges), domTerm = leibTerm(1,0,{k0,k0})
+  m=2: all term bounds hold on k < 64; min (bound - (target+2)) over non-dominant terms = 0
+  m=3: all term bounds hold on k < 128; min (bound - (target+2)) over non-dominant terms = 0
+  m=4: all term bounds hold on k < 64; min (bound - (target+2)) over non-dominant terms = 1
+  m=2: v2(R_m(domTerm)) = 88 = target 88
+  m=3: v2(R_m(domTerm)) = 205 = target 205
+  m=4: v2(R_m(domTerm)) = 450 = target 450
+  m=5: v2(R_m(domTerm)) = 951 = target 951
+
+== Stmt_L5: v2(S_n) = target(m) along n = 2^m - 1 (via J values)
+  m=2 n=3: v2(S_n) = 88, target = 88
+  m=3 n=7: v2(S_n) = 205, target = 205
+  m=4 n=15: v2(S_n) = 450, target = 450
+  m=5 n=31: v2(S_n) = 951, target = 951
+  m=6 n=63: v2(S_n) = 1964, target = 1964
+  m=7 n=127: v2(S_n) = 4001, target = 4001
+
+0 checks failed; total time 329.8s
+exit=0

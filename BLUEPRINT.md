@@ -147,7 +147,8 @@ What it checks:
 * JConv, Translation and L1: 2-adic convergence of the Riemann sums of the Lean definitions to the
   cached J-values.
 
-The quick run finishes in about 4 minutes, and all checks pass.
+The quick run (`--quick`) takes about 4 minutes and the full run about 6 minutes; both pass all
+checks. The full-run log is `python/mirror_full.log` (0 checks failed; `v₂(S_{127}) = 4001`).
 
 ## Workflow for provers
 
