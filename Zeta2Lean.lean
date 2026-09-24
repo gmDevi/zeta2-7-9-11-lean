@@ -1,1 +1,1 @@
-import Zeta2Lean.Basic
+import Zeta2Lean.Main
