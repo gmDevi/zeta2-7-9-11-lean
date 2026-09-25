@@ -9,6 +9,9 @@ This sharpens L. Lai, *On the irrationality of certain 2-adic zeta values*, IJNT
 (arXiv:2304.00816), Thm 1.1 with s = 3, which proves that at least one of ζ₂(7), ζ₂(9), ζ₂(11), ζ₂(13)
 is irrational. Here ζ₂(13) is removed.
 
+**Paper.** [`docs/zeta2_7_9.pdf`](docs/zeta2_7_9.pdf) writes up the mathematics of this theorem (Theorem B there) and of the
+stronger result that at least one of ζ₂(7), ζ₂(9) is irrational (https://github.com/gmDevi/zeta2-7-9-lean).
+
 ## What exactly is proved in Lean
 
 ```lean
