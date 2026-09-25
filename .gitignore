@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 /Zeta2Lean/Scratch/
 /scripts/lead_*.sh
+/.palomar-tools/

@@ -1,7 +1,7 @@
 name = "zeta2-lean"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["Zeta2Lean"]
+defaultTargets = ["Zeta2Lean", "Challenge", "Solution"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -16,3 +16,12 @@ rev = "v4.35.0-rc2"
 
 [[lean_lib]]
 name = "Zeta2Lean"
+
+# Palomar statement (imports only Mathlib) and its proof; compared by `comparator.json`.
+[[lean_lib]]
+name = "Challenge"
+roots = ["Challenge"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]

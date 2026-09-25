@@ -85,11 +85,29 @@ The resulting exponent is 11 − 16 log 2 = −0.0904 < 0.
 * `BLUEPRINT.md`: statement map and dependency graph. `STATUS.md`: per-file census.
 * `python/mirror.py`: an exact-arithmetic mirror of the definitions, with numerical checks of every statement.
 * `scripts/`: `check.sh` (elaborate one file), `build.sh`, `audit.sh`.
+* `Challenge.lean`, `Solution.lean`, `comparator.json`, `formalization.yaml`: the statement, proof and metadata
+  for [Comparator](https://github.com/leanprover/comparator) and the Palomar registry (next section).
+
+## Challenge and Solution
+
+`Challenge.lean` imports only Mathlib. It contains verbatim copies of the six trusted definitions of
+`Zeta2Lean/Defs.lean` and states the theorem as `Zeta2.zeta2_7_9_11_not_all_rational_palomar`, with `sorry`.
+`Solution.lean` proves the same statement from `zeta2_7_9_11_not_all_rational_unconditional`. `comparator.json`
+asks Comparator to check that the two statements, and every definition they use, are identical, and that the
+proof uses only `propext`, `Quot.sound` and `Classical.choice`. The toolchain (v4.35.0-rc2) ships `lake comparator`;
+it needs `bwrap` (bubblewrap) for its sandbox. `formalization.yaml` records the sources, the production process and
+the review status.
 
 ## Building
 
 ```bash
 lake exe cache get
-lake build
+lake build                                 # also builds Challenge and Solution
 lake env lean Zeta2Lean/Cited/Main.lean   # prints the axioms of the unconditional theorem
+lake comparator                            # judges Solution against Challenge (needs bwrap)
 ```
+
+## Licence
+
+Apache-2.0 (`LICENSE`). The vendored files under `Zeta2Lean/Cited/Vendor/PNT/` keep their upstream Apache-2.0
+headers and authors.

@@ -1,0 +1,347 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4 (https://github.com/mathlib-initiative/formalization.yaml), with the
+# fields Palomar requires (https://github.com/PalomarRegistry/PalomarPolicy/blob/main/CONTRIBUTING.md).
+version: "v0.4"
+
+project:
+  name: "At least one of the 2-adic zeta values ζ₂(7), ζ₂(9), ζ₂(11) is irrational"
+  description: >-
+    A Lean 4 and Mathlib proof that at least one of the 2-adic zeta values ζ₂(7), ζ₂(9), ζ₂(11)
+    is irrational. The theorem has no hypotheses, and its proof uses only the axioms propext,
+    Classical.choice and Quot.sound. The values are defined through the Volkenborn integral:
+    zeta2 s = J(s−1)/((s−1)·2^s), where J(s) is the 2-adic limit of the Riemann sums
+    2^(−N) Σ_{x<2^N} (x+1/2)^(−s), and the theorem also proves that these limits exist. By
+    Lemma 2.8 of Lai, Sprang and Zudilin (IMRN 2026), zeta2 s is the Kubota–Leopoldt value
+    ζ₂(s) = L₂(s, ω^(1−s)) for s ≥ 2. That identification is cited, not formalised; it only
+    involves a non-zero rational factor, which does not affect irrationality. The result sharpens
+    Theorem 1.1 (case s = 3) of L. Lai (Int. J. Number Theory 2025), which shows that at least one
+    of ζ₂(7), ζ₂(9), ζ₂(11), ζ₂(13) is irrational. The proof uses linear forms
+    S_n = −∫ R_n'''(t+1/2) dt in 1, ζ₂(7), ζ₂(9), ζ₂(11), with
+    R_n(t) = 2^(16n)(2t+n)(t+1/2)_n^8/(t)_(n+1)^8. Their denominators are controlled by a one-power
+    saving that comes from Andrews' multiple-series transformation (proved here in Lean) and by the
+    prime number theorem (proved here from a vendored Lean proof of the Wiener–Ikehara theorem).
+    The exact 2-adic valuation of S_n along n = 2^m − 1 shows that S_n ≠ 0, and Lai's
+    irrationality criterion concludes. The mathematics and the Lean code were produced by AI agents
+    under human direction and have not been refereed.
+  # Placeholders: the human author(s) and maintainer(s) must be filled in before submission.
+  # AI systems are credited in automation.methods, never here.
+  authors:
+    - "<<AUTHOR NAME>>"
+  responsible_maintainers:
+    - "<<AUTHOR NAME>>"
+  license: "Apache-2.0"
+
+classification:
+  arxiv: [math.NT]
+  msc2020: [11J72, 11S40, 11S80, 11M06, 33C20]
+
+sources:
+  - title: >-
+      At least one of the 2-adic zeta values ζ₂(7), ζ₂(9), ζ₂(11) is irrational (informal proof in
+      docs/proof.md of this repository)
+    type: original-proof
+    id: "docs/proof.md (this repository)"
+    relationship: other
+    note: >-
+      The theorem is first presented here, by the informal proof docs/proof.md and this Lean
+      formalisation. Both were produced by AI agents under the direction of the maintainer (see
+      automation) and have not been refereed. docs/proof.md §1–2 lists every published lemma it
+      uses. Literature search (2026-09-24, by AI agents) in arXiv (with the forward citations of
+      Lai's paper), Zenodo, zbMATH, OpenAlex, Crossref, GitHub, and public talks and blogs: the
+      only earlier texts that imply the result are the unrefereed drafts of C. D. Long listed below,
+      which claim stronger statements; no earlier statement of the result for {7, 9, 11} itself was
+      found. Google Scholar, MathSciNet and Lai's thesis were not searched. Novelty beyond that
+      search is not established.
+
+  - title: "On the irrationality of certain 2-adic zeta values"
+    authors: ["Li Lai"]
+    type: paper
+    id: "https://doi.org/10.1142/S1793042125500113"
+    location: >-
+      Int. J. Number Theory 21 (2025), no. 1, 207–235; arXiv:2304.00816. Theorem 1.1 (case s = 3);
+      Lemma 2.1 (irrationality criterion); Lemmas 2.4–2.5 (the operators Δ and Δ_m); Section 6
+      (dominant term along n = 2^m − 1).
+    relationship: other
+    note: >-
+      Prior result that the recorded theorem sharpens: Theorem 1.1 with s = 3 shows that at least
+      one of ζ₂(7), ζ₂(9), ζ₂(11), ζ₂(13) is irrational, and the recorded theorem removes ζ₂(13) by a
+      different construction. The proof uses this paper's irrationality criterion, its Δ-operator
+      bounds for Volkenborn integrals (after Sprang), and its dominant-term method for the 2-adic
+      valuation along n = 2^m − 1, with one new identity. These tools are restated and proved in
+      Lean here (Zeta2Lean/Proofs). The paper's theorem itself is not formalised.
+    author_endorsement: not-contacted
+
+  - title: "A note on the irrationality of ζ₂(5)"
+    authors: ["Li Lai", "Johannes Sprang", "Wadim Zudilin"]
+    type: paper
+    id: "https://doi.org/10.1093/imrn/rnag180"
+    location: >-
+      Int. Math. Res. Not. IMRN 2026, no. 16, rnag180; arXiv:2505.05005 (numbering of v2).
+      Definition 2.7 and Lemma 2.8 (normalisation of ζ₂(s)); Definitions 3.1–3.2 (rational function
+      and linear form); Lemmas 5.2–5.3 (denominators via Andrews' transformation).
+    relationship: other
+    note: >-
+      Lemma 2.8, (s−1)⁻¹ ∫_{ℤ₂} (t+1/2)^(1−s) dt = 2^s ζ₂(s) for s ≥ 2 with
+      ζ₂(s) = L₂(s, ω^(1−s)), identifies the Lean definition zeta2 with the Kubota–Leopoldt value.
+      This is cited and not formalised. The construction here replaces this paper's rational
+      function and linear form for ζ₂(5) (Definitions 3.1–3.2: fourth powers, first derivative) by
+      eighth powers and a third derivative. The one-power denominator saving follows the paper's
+      Andrews-transformation argument (Lemma 5.3), and is proved in Lean here. The paper gives a new
+      proof that ζ₂(5) is irrational.
+    author_endorsement: not-contacted
+
+  - title: "Hypergéométrie et fonction zêta de Riemann"
+    authors: ["Christian Krattenthaler", "Tanguy Rivoal"]
+    type: paper
+    id: "https://arxiv.org/abs/math/0311114"
+    location: >-
+      Mem. Amer. Math. Soc. 186 (2007), no. 875. Théorème 8 (Section 6): Andrews' transformation,
+      the q → 1 case of Andrews (1975), Theorem 4.
+    relationship: other
+    note: >-
+      Andrews' transformation of a terminating very-well-poised 2m+5F2m+4 series into an m-fold
+      sum is stated in Lean as Zeta2.Andrews_Stmt (any field of characteristic 0, all displayed
+      denominators non-zero) and proved in Zeta2Lean/Cited (Zeta2.Andrews_proof), via a q = 1
+      Bailey chain and a polynomial Pfaff–Saalschütz identity. It is an ingredient of the proof, not
+      the recorded result.
+    author_endorsement: not-contacted
+
+  - title: "Problems and prospects for basic hypergeometric functions"
+    authors: ["George E. Andrews"]
+    type: paper
+    id: >-
+      In: Theory and Application of Special Functions (R. A. Askey, ed.), Math. Res. Center, Univ.
+      Wisconsin, Publ. No. 35, Academic Press, New York, 1975, pp. 191–224
+    location: "Theorem 4"
+    relationship: other
+    note: >-
+      Original source of the transformation, as a basic hypergeometric (q-series) identity. Its
+      q → 1 limit, in the form stated by Krattenthaler and Rivoal, is what is formalised here.
+    author_endorsement: not-contacted
+
+  - title: >-
+      The Wiener–Ikehara Tauberian theorem and the prime number theorem, in the Lean 4 proofs of
+      mathlib4 pull requests #43046, #43233 and #43238
+    authors:
+      - "Jose Francisco Antonio Balderas"
+      - "Vincent Beffara"
+      - "Alex Kontorovich"
+      - "Terence Tao"
+      - "Ruben Van de Velde"
+      - "Arend Mellendijk"
+      - "Alastair Irving"
+    type: formalization
+    id: "https://github.com/leanprover-community/mathlib4/pull/43238"
+    location: >-
+      Head commit 78e1b2bbd0d256081c926fccada84fd084653286 of pull request #43238, which contains
+      #43046 and #43233 (open, not merged in Mathlib as of 2026-09-25). Authors as in the file
+      headers.
+    relationship: other
+    note: >-
+      The prime number theorem ψ(x)/x → 1 is needed for log D_n = 11n + o(n). It is proved in Lean
+      here (Zeta2.PNT_proof) from the Wiener–Ikehara theorem, whose Lean proof is vendored verbatim,
+      with porting notes and the upstream Apache-2.0 headers, in Zeta2Lean/Cited/Vendor/PNT. The
+      derivation of the prime number theorem follows WeakPNT.lean of #43238. The pull requests are
+      by Terence Tao and adapt code of the PrimeNumberTheoremAnd project (see
+      related_formalizations). This is an ingredient of the proof, not the recorded result.
+    license: "Apache-2.0"
+    author_endorsement: not-contacted
+
+  - title: "Irrationality of certain p-adic periods for small p"
+    authors: ["Frank Calegari"]
+    type: paper
+    id: "https://doi.org/10.1155/IMRN.2005.1235"
+    location: "Int. Math. Res. Not. 2005, no. 20, 1235–1249"
+    relationship: background
+    note: "Irrationality of ζ₂(3) (and ζ₃(3)). Context: the smallest 2-adic zeta values."
+
+  - title: >-
+      p-adic Eisenstein series, arithmetic holonomicity criteria, and irrationality of the 2-adic
+      period ζ₂(5)
+    authors: ["Frank Calegari", "Vesselin Dimitrov", "Yunqing Tang"]
+    type: talk slides
+    id: "https://people.maths.ox.ac.uk/newton/lnts/VDimitrov-LNT.pdf"
+    location: >-
+      Slides of a talk by V. Dimitrov (12 June 2020) on joint work with F. Calegari and Y. Tang; see
+      also F. Calegari, V. Dimitrov, Y. Tang, Arithmetic holonomy bounds and effective Diophantine
+      approximation, arXiv:2510.04156 (2025). Lai–Sprang–Zudilin cite both (references [9] and [12]
+      of arXiv:2505.05005v2) for the irrationality of ζ₂(5).
+    relationship: background
+    note: "Irrationality of ζ₂(5). Context: ζ₂(3) and ζ₂(5) are known to be irrational."
+
+  - title: "Hybrid arithmetic holonomy and twenty-two individual p-adic zeta values"
+    authors: ["Christopher D. Long"]
+    type: unrefereed draft (GitHub repository)
+    id: "https://github.com/octonion/p-adic-zeta-irrationality"
+    location: >-
+      Commit b46a1770901551961710e155d775aae7c5ea39e7 (2026-08-25): README.md and
+      hybrid_arithmetic_holonomy.pdf.
+    relationship: background
+    note: >-
+      Related claim, not used here. The draft claims that ζ₂(s) is irrational for every odd s with
+      3 ≤ s ≤ 29 (and ζ₃(s) for odd 3 ≤ s ≤ 11, ζ₅(3), ζ₅(5) and ζ₇(3)), which would imply the
+      recorded theorem. It is unrefereed, its README says that independent specialist review
+      remains appropriate before publication, and we have not been able to verify its large-prime
+      step.
+    author_endorsement: not-contacted
+
+  - title: "Multiweight arithmetic holonomy and density-one irrationality of p-adic zeta values"
+    authors: ["Christopher D. Long"]
+    type: unrefereed draft (GitHub repository)
+    id: "https://github.com/octonion/p-adic-zeta-density"
+    location: "Commit 4c87bcdf4d7d62d0f1981f16e228901f02cd9f57 (2026-08-26): README.md."
+    relationship: background
+    note: >-
+      Related claim by the same author, not used here: for every fixed prime p, ζ_p(s) is irrational
+      for a density-one set of odd s. It is unrefereed, and its README says that independent
+      specialist review remains appropriate before publication.
+    author_endorsement: not-contacted
+
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4/pull/43238"
+    relationship: builds-on
+    note: >-
+      Open mathlib4 pull requests by Terence Tao: #43046 (compactly supported functions are dense in
+      Schwartz space), #43233 (the Wiener–Ikehara Tauberian theorem) and #43238 (the weak prime
+      number theorem), at head 78e1b2bbd0d256081c926fccada84fd084653286. The files of #43046 and
+      #43233 are vendored verbatim, with porting notes, in Zeta2Lean/Cited/Vendor/PNT. Once they are
+      in Mathlib, the vendored copies can be dropped.
+  - id: "https://github.com/AlexKontorovich/PrimeNumberTheoremAnd"
+    relationship: builds-on
+    note: >-
+      Indirectly: the vendored Wiener–Ikehara code comes from the pull requests above, which adapt it
+      from the PrimeNumberTheoremAnd project. This repository does not depend on that project.
+
+status:
+  scope: >-
+    Formalised: the complete proof of the theorem stated in Challenge.lean, including the two
+    inputs that the development first took as hypotheses, namely the prime number theorem (from a
+    vendored Lean proof of the Wiener–Ikehara theorem) and Andrews' transformation (proved here).
+    Not formalised: the identification of zeta2 s with the Kubota–Leopoldt value
+    ζ₂(s) = L₂(s, ω^(1−s)) (Lai–Sprang–Zudilin, Lemma 2.8). The Kubota–Leopoldt L-function is not
+    defined in Lean here. The identification only involves a non-zero rational factor and does not
+    affect irrationality. The theorem says that ζ₂(7), ζ₂(9), ζ₂(11) are not all rational. It does
+    not say that two of them are irrational, and it gives no irrationality measure.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: [propext, Classical.choice, Quot.sound]
+  main_results:
+    - declaration: Zeta2.zeta2_7_9_11_not_all_rational_palomar
+      file: Solution.lean
+      sorry_count: 0
+      axioms: [propext, Classical.choice, Quot.sound]
+      comparator_config: comparator.json
+      literature_dependencies:
+        - statement: >-
+            zeta2 s = ζ₂(s) = L₂(s, ω^(1−s)) for integers s ≥ 2. This is needed only to read the
+            theorem as a statement about Kubota–Leopoldt values, not for its proof.
+          source: "Lai–Sprang–Zudilin, A note on the irrationality of ζ₂(5), Lemma 2.8"
+
+automation:
+  methods:
+    - method: agent
+      models: [claude-opus-5-5]
+      framework: "Claude Code (Anthropic)"
+      tool_setup: >-
+        One interactive Claude Code session running Claude Opus 5.5, directed by the human
+        maintainer, orchestrated the work. It planned the research, launched and integrated the
+        subagent workflows listed below, and wrote the blueprint (BLUEPRINT.md), the definitions and
+        lemma statements (Zeta2Lean/Defs.lean, Zeta2Lean/Statements.lean, Zeta2Lean/Cited/Defs.lean,
+        Zeta2Lean/Cited/Statements.lean), the assembly of the main theorem, and the Challenge,
+        Solution and metadata files.
+      cost:
+        wall_time: >-
+          About two days (2026-09-23 to 2026-09-25) for the whole session, including the
+          mathematical research; the Lean development is the git history, 2026-09-24 to 2026-09-25.
+        spend_usd: "not tracked"
+        hardware: >-
+          Anthropic API models; Lean builds and exact-arithmetic Python computations on a local
+          workstation (32 threads)
+    - method: autonomous
+      models: [claude-opus-5-5]
+      framework: "Claude Code subagents launched by workflow scripts"
+      tool_setup: >-
+        Research subagents searched for the construction with exact-arithmetic computations and
+        wrote the informal proof (docs/proof.md), which adversarial verifier subagents checked.
+        Prover subagents, one per proof file, wrote the Lean proofs against frozen statements (the 24
+        files of Zeta2Lean/Proofs and the Andrews files of Zeta2Lean/Cited/Proofs). Agents also
+        vendored and ported the Wiener–Ikehara files. Scout subagents explored proof routes, for
+        example docs/cited/AndrewsScout.lean. Auditor subagents checked the definitions and
+        statements for faithfulness and soundness. They wrote exact-arithmetic Python mirrors of the
+        statements (python/) and replayed every module with Lean's leanchecker.
+      prompting_notes: >-
+        Task specifications were the statement docstrings and the "Workflow for provers" sections of
+        BLUEPRINT.md. Statements were frozen, and provers reported problems back instead of editing
+        them.
+  spend_usd: "not tracked"
+  notes: >-
+    The mathematics (the construction and the informal proof in docs/proof.md) and all Lean code of
+    this repository, except the vendored files in Zeta2Lean/Cited/Vendor/PNT (by Terence Tao and the
+    PrimeNumberTheoremAnd contributors), were produced by AI agents (Anthropic Claude models; the
+    commits are co-authored by Claude Opus 5.5) under the direction of the human maintainer. The
+    maintainer posed the research question that led to this work (irrationality of odd zeta
+    values), directed and supervised the runs, and is responsible for the submission. No human
+    expert has checked the informal proof or the Lean statement. The history of each round is in
+    the git log, STATUS.md and BLUEPRINT.md.
+
+fidelity:
+  divergences: >-
+    (1) zeta2 s is defined as J(s−1)/((s−1)·2^s) through the Volkenborn integral, not as the
+    Kubota–Leopoldt value L₂(s, ω^(1−s)). The equality is Lai–Sprang–Zudilin Lemma 2.8, cited and not
+    formalised. It only involves a non-zero rational factor, so it does not affect irrationality.
+    Other normalisations of ζ₂(s), such as Coleman's or Furusho's with the Euler factor
+    (1 − 2^(−s))⁻¹, also differ by a non-zero rational factor. (2) The Volkenborn integral is
+    defined by Riemann sums over natural numbers and Mathlib's limUnder. The theorem therefore also
+    proves that the Riemann sums of (x+1/2)^(−s) converge to J s, so no unspecified value of
+    limUnder enters the statement. (3) "Rational" means "in the image of ℚ → ℚ_[2]". (4) The
+    informal proof cites the prime number theorem and Andrews' transformation as published
+    results. Both are proved in Lean here; the prime number theorem uses vendored code from open
+    mathlib4 pull requests (see sources).
+
+review:
+  status: agent-reviewed
+  reviewers:
+    - "Claude Opus 5.5 auditor and verifier subagents (AI systems, not human reviewers)"
+  notes: >-
+    Not peer-reviewed: no human expert has checked the informal proof (docs/proof.md) or the formal
+    statement. Before submission: (1) two adversarial AI audits (commits 25574c6 and 652d6c8)
+    checked the definitions and every lemma statement for faithfulness to the informal proof and for
+    soundness (no vacuous statement, no x/0 = 0 or truncated-subtraction loophole). They used
+    independent exact-arithmetic Python mirrors (python/mirror.py, python/audit_independent.py,
+    python/cited_mirror.py; logs in python/). (2) Lean's kernel replays every module with
+    leanchecker in CI. (3) #print axioms of the main theorems lists only propext, Classical.choice
+    and Quot.sound. (4) The toolchain's lake comparator, run as Palomar runs it (Challenge compiled
+    outside Lake, both modules exported with leanexport, Lean's kernel plus the NanoDa and con-ron
+    kernels), accepts Solution.lean against Challenge.lean.
+
+alignment:
+  namespace: Zeta2
+  statements:
+    - source: "docs/proof.md §0, Theorem"
+      lean: Zeta2.zeta2_7_9_11_not_all_rational_palomar
+      module: Challenge (statement), Solution (proof)
+      status: proved
+      note: >-
+        Solution.lean proves it by Zeta2.zeta2_7_9_11_not_all_rational_unconditional
+        (Zeta2Lean/Cited/Main.lean), whose type Zeta2.MainStatement (Zeta2Lean/Statements.lean)
+        unfolds to the same proposition.
+    - source: "Lai–Sprang–Zudilin, Lemma 2.8 (normalisation of ζ₂(s))"
+      lean: Zeta2.zeta2
+      module: Challenge, Zeta2Lean.Defs
+      status: literature-dependency
+      note: "Definition only; the identification with L₂(s, ω^(1−s)) is not formalised."
+    - source: "Krattenthaler–Rivoal, Théorème 8 (Andrews 1975, Theorem 4, q → 1)"
+      lean: Zeta2.Andrews_proof
+      module: Zeta2Lean.Cited.Main
+      status: proved
+    - source: "Prime number theorem ψ(x)/x → 1"
+      lean: Zeta2.PNT_proof
+      module: Zeta2Lean.Cited.Main
+      status: proved
+      note: "From the vendored Lean proof of the Wiener–Ikehara theorem."
+
+acknowledgements: >-
+  Mathlib. The vendored Wiener–Ikehara and Schwartz-density files of mathlib4 pull requests #43046,
+  #43233 and #43238 by Terence Tao, adapted from the PrimeNumberTheoremAnd project, keep their
+  Apache-2.0 headers. Lean's lake comparator, leanchecker, NanoDa and con-ron were used for
+  checking.
