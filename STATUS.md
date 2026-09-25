@@ -1,8 +1,8 @@
 # Status: at least one of ζ₂(7), ζ₂(9), ζ₂(11) is irrational
 
 Updated 2026-09-24 by the integrator after the first prove round of `Zeta2Lean/Cited/`, which discharges
-the two cited hypotheses. The previous state is commit `089ed7a` (the Cited blueprint, with seven stubs).
-The main development was completed in commit `6790eec` (prove round 1).
+the two cited hypotheses. The previous state is commit `ba5470c` (the Cited blueprint, with seven stubs).
+The main development was completed in commit `e14030c` (prove round 1).
 
 ## Headline
 
@@ -107,9 +107,9 @@ All paths are under `Zeta2Lean/Cited/`.
 * **Kernel replay.** `leanchecker` replayed the declarations of each of the twelve `Cited` modules, one
   module at a time. All runs exit 0.
 * **Frozen files.** `git diff` touches only the seven stub files, and no file was added or removed.
-  * Unchanged since `6790eec`: `Defs`, `Statements`, `Assembly`, `Main`, `Proofs/`, the root
+  * Unchanged since `e14030c`: `Defs`, `Statements`, `Assembly`, `Main`, `Proofs/`, the root
     `Zeta2Lean.lean`, `lakefile.toml`, `lake-manifest.json` and `lean-toolchain`.
-  * Unchanged since `089ed7a`: `Cited/Defs`, `Cited/Statements`, `Cited/Assembly`, `Cited/Main` and
+  * Unchanged since `ba5470c`: `Cited/Defs`, `Cited/Statements`, `Cited/Assembly`, `Cited/Main` and
     `Cited/Proofs/WienerIkehara`.
 * **Headers.** Each of the five Andrews files keeps the stub's `theorem X_proof` header (hypotheses and
   type) and only replaces `sorry`. Their helpers live in the files' own namespaces (`Zeta2.Cited.PPS`,
@@ -264,7 +264,7 @@ None of them affects correctness.
 
 ## Integrator checks (main development, prove round 1)
 
-* `git diff 652d6c8` touches only `Zeta2Lean/Proofs/*.lean`. `Defs`, `Statements`, `Assembly`, `Main`,
+* `git diff cc3e1d7` touches only `Zeta2Lean/Proofs/*.lean`. `Defs`, `Statements`, `Assembly`, `Main`,
   `lakefile.toml`, `lake-manifest.json` and `lean-toolchain` are unchanged, and no file was added or removed.
 * Every `theorem X_proof` header (hypotheses and type) is identical to the stub's. Two files only switched to
   `where` structure syntax. `Main.lean` compiles against them.
