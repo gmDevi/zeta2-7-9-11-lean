@@ -23,8 +23,7 @@ project:
     The exact 2-adic valuation of S_n along n = 2^m − 1 shows that S_n ≠ 0, and Lai's
     irrationality criterion concludes. The mathematics and the Lean code were produced by AI agents
     under human direction and have not been refereed.
-  # Placeholders: the human author(s) and maintainer(s) must be filled in before submission.
-  # AI systems are credited in automation.methods, never here.
+  # Humans only: AI systems are credited in automation.methods, never here.
   authors:
     - "Gennaro Marco Devincenzis"
   responsible_maintainers:
@@ -130,7 +129,7 @@ sources:
       - "Ruben Van de Velde"
       - "Arend Mellendijk"
       - "Alastair Irving"
-    type: formalization
+    type: other
     id: "https://github.com/leanprover-community/mathlib4/pull/43238"
     location: >-
       Head commit 78e1b2bbd0d256081c926fccada84fd084653286 of pull request #43238, which contains
@@ -138,7 +137,9 @@ sources:
       headers.
     relationship: other
     note: >-
-      The prime number theorem ψ(x)/x → 1 is needed for log D_n = 11n + o(n). It is proved in Lean
+      This source is Lean code, not a paper, hence type other; the pull requests are also listed
+      under related_formalizations. The prime number theorem ψ(x)/x → 1 is needed for
+      log D_n = 11n + o(n). It is proved in Lean
       here (Zeta2.PNT_proof) from the Wiener–Ikehara theorem, whose Lean proof is vendored verbatim,
       with porting notes and the upstream Apache-2.0 headers, in Zeta2Lean/Cited/Vendor/PNT. The
       derivation of the prime number theorem follows WeakPNT.lean of #43238. The pull requests are
@@ -159,7 +160,7 @@ sources:
       p-adic Eisenstein series, arithmetic holonomicity criteria, and irrationality of the 2-adic
       period ζ₂(5)
     authors: ["Frank Calegari", "Vesselin Dimitrov", "Yunqing Tang"]
-    type: talk slides
+    type: other
     id: "https://people.maths.ox.ac.uk/newton/lnts/VDimitrov-LNT.pdf"
     location: >-
       Slides of a talk by V. Dimitrov (12 June 2020) on joint work with F. Calegari and Y. Tang; see
@@ -167,34 +168,37 @@ sources:
       approximation, arXiv:2510.04156 (2025). Lai–Sprang–Zudilin cite both (references [9] and [12]
       of arXiv:2505.05005v2) for the irrationality of ζ₂(5).
     relationship: background
-    note: "Irrationality of ζ₂(5). Context: ζ₂(3) and ζ₂(5) are known to be irrational."
+    note: >-
+      Talk slides, with the later arXiv paper named in location. Irrationality of ζ₂(5). Context:
+      ζ₂(3) and ζ₂(5) are known to be irrational.
 
   - title: "Hybrid arithmetic holonomy and twenty-two individual p-adic zeta values"
     authors: ["Christopher D. Long"]
-    type: unrefereed draft (GitHub repository)
+    type: other
     id: "https://github.com/octonion/p-adic-zeta-irrationality"
     location: >-
       Commit b46a1770901551961710e155d775aae7c5ea39e7 (2026-08-25): README.md and
       hybrid_arithmetic_holonomy.pdf.
     relationship: background
     note: >-
-      Related claim, not used here. The draft claims that ζ₂(s) is irrational for every odd s with
-      3 ≤ s ≤ 29 (and ζ₃(s) for odd 3 ≤ s ≤ 11, ζ₅(3), ζ₅(5) and ζ₇(3)), which would imply the
-      recorded theorem. It is unrefereed, its README says that independent specialist review
+      Unrefereed draft in a GitHub repository. Related claim, not used here. The draft claims that
+      ζ₂(s) is irrational for every odd s with 3 ≤ s ≤ 29 (and ζ₃(s) for odd 3 ≤ s ≤ 11, ζ₅(3),
+      ζ₅(5) and ζ₇(3)), which would imply the recorded theorem. It is unrefereed, its README says that independent specialist review
       remains appropriate before publication, and we have not been able to verify its large-prime
       step.
     author_endorsement: not-contacted
 
   - title: "Multiweight arithmetic holonomy and density-one irrationality of p-adic zeta values"
     authors: ["Christopher D. Long"]
-    type: unrefereed draft (GitHub repository)
+    type: other
     id: "https://github.com/octonion/p-adic-zeta-density"
     location: "Commit 4c87bcdf4d7d62d0f1981f16e228901f02cd9f57 (2026-08-26): README.md."
     relationship: background
     note: >-
-      Related claim by the same author, not used here: for every fixed prime p, ζ_p(s) is irrational
-      for a density-one set of odd s. It is unrefereed, and its README says that independent
-      specialist review remains appropriate before publication.
+      Unrefereed draft in a GitHub repository. Related claim by the same author, not used here:
+      for every fixed prime p, ζ_p(s) is irrational for a density-one set of odd s. It is
+      unrefereed, and its README says that independent specialist review remains appropriate before
+      publication.
     author_endorsement: not-contacted
 
 related_formalizations:
@@ -304,7 +308,8 @@ review:
     - "Claude Opus 5.5 auditor and verifier subagents (AI systems, not human reviewers)"
   notes: >-
     Not peer-reviewed: no human expert has checked the informal proof (docs/proof.md) or the formal
-    statement. Before submission: (1) two adversarial AI audits (commits 25574c6 and 652d6c8)
+    statement. Before submission: (1) two adversarial AI audits (the commits "Audit: faithfulness
+    check of Defs/Statements/Assembly …" and "Audit 2 (Lean soundness) …" in the git history)
     checked the definitions and every lemma statement for faithfulness to the informal proof and for
     soundness (no vacuous statement, no x/0 = 0 or truncated-subtraction loophole). They used
     independent exact-arithmetic Python mirrors (python/mirror.py, python/audit_independent.py,
@@ -316,7 +321,12 @@ review:
     leanexport, Lean's kernel plus the NanoDa and con-ron kernels), and with leanprover/comparator
     (commit 32bd61d) built from source with the same toolchain and kernels. Both runs were
     unsandboxed, because bubblewrap and landrun were not installed on that machine. A copy of
-    Challenge.lean with one altered definition (halfPow) was rejected.
+    Challenge.lean with one altered definition (halfPow) was rejected. (5) Later on 2026-09-25 an
+    independent AI auditor repeated the Palomar-style run from scratch with the same Lean files
+    (fresh canonical Challenge compilation and fresh exports, byte-identical to the earlier ones;
+    unsandboxed lake comparator with the NanoDa and con-ron kernels). Comparator accepted, and it
+    rejected two further altered copies of Challenge.lean: one with zeta2 13 in place of zeta2 11
+    in the theorem, and one with 2^(s+1) in place of 2^s in the definition of zeta2.
 
 alignment:
   namespace: Zeta2

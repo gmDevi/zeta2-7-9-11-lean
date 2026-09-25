@@ -31,8 +31,10 @@ This sharpens L. Lai, *On the irrationality of certain 2-adic zeta values*, IJNT
 Honest caveats: (i) the whole proof is new and has not been refereed; the risky steps (L2c, L5) are
 each backed by exact computer checks listed in §9, but a human referee should re-derive them.
 (ii) The margin is thin (−0.0904 per n) but it is an honest asymptotic exponent; nothing below depends on
-numerics. (iii) Novelty: a quick web search (2026-09-24) found no prior statement of the {7,9,11} result;
-not exhaustive.
+numerics. (iii) Novelty: the literature search recorded in `formalization.yaml` (2026-09-24) found no prior
+statement of the {7,9,11} result itself; unrefereed drafts by C. D. Long (August 2026) claim stronger results
+that would imply it. The search was not exhaustive (Google Scholar, MathSciNet and Lai's thesis were not
+searched).
 
 ---------------------------------------------------------------------------------------------------
 

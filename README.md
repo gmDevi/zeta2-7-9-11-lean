@@ -1,6 +1,7 @@
 # zeta2-lean
 
-A Lean 4 + Mathlib formalisation of a new (unrefereed) result:
+A Lean 4 + Mathlib formalisation of an unrefereed result that our literature search did not find stated
+before (see *Novelty* below):
 
 > **Theorem.** At least one of the 2-adic zeta values ζ₂(7), ζ₂(9), ζ₂(11) is irrational.
 
@@ -72,9 +73,10 @@ The resulting exponent is 11 − 16 log 2 = −0.0904 < 0.
   checks the formal statement as displayed above. Whether that statement matches the mathematics is a matter
   of the trusted definitions and the cited identification listed here.
 * **Novelty.** As of 2026-09-24 we found no prior statement of the {7, 9, 11} result in refereed work, arXiv,
-  Zenodo, zbMATH, OpenAlex, Crossref or public talks and blogs; Google Scholar and MathSciNet were not
-  searched. Unrefereed GitHub drafts by C. D. Long (August 2026) claim irrationality of every ζ₂(s) with s odd
-  and s ≤ 29, which would imply this result. We have not been able to verify their large-prime step.
+  Zenodo, zbMATH, OpenAlex, Crossref or public talks and blogs; Google Scholar, MathSciNet and Lai's thesis
+  were not searched, so novelty beyond this search is not established. Unrefereed GitHub drafts by
+  C. D. Long (August 2026) claim irrationality of every ζ₂(s) with s odd and s ≤ 29, which would imply this
+  result. We have not been able to verify their large-prime step.
 * **Scope.** This method does not give "two of the three": the 2-adic Nesterenko ratio is
   22.18/22.09 = 1.004, and dimension 3 would need a ratio above 2.
 
@@ -101,7 +103,9 @@ asks Comparator to check that the two statements, and every definition they use,
 proof uses only `propext`, `Quot.sound` and `Classical.choice`. The toolchain (v4.35.0-rc2) ships `lake comparator`;
 it needs `bwrap` (bubblewrap) for its sandbox. On 2026-09-25 the toolchain's `lake comparator`, run as Palomar runs
 it (with the NanoDa and con-ron kernels besides Lean's), and leanprover/comparator built from source both accepted
-`Solution.lean`; both runs were unsandboxed. `formalization.yaml` records the sources, the production process and
+`Solution.lean`; both runs were unsandboxed. An independent re-run of the Palomar-style check (also unsandboxed)
+accepted it again. Altered copies of `Challenge.lean` were rejected: one with a changed theorem statement, and two
+with a changed definition (`halfPow`, `zeta2`). `formalization.yaml` records the sources, the production process and
 the review status.
 
 ## Building
