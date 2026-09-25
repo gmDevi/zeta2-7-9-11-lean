@@ -310,9 +310,13 @@ review:
     independent exact-arithmetic Python mirrors (python/mirror.py, python/audit_independent.py,
     python/cited_mirror.py; logs in python/). (2) Lean's kernel replays every module with
     leanchecker in CI. (3) #print axioms of the main theorems lists only propext, Classical.choice
-    and Quot.sound. (4) The toolchain's lake comparator, run as Palomar runs it (Challenge compiled
-    outside Lake, both modules exported with leanexport, Lean's kernel plus the NanoDa and con-ron
-    kernels), accepts Solution.lean against Challenge.lean.
+    and Quot.sound. (4) On 2026-09-25, at the commit that added Challenge.lean and Solution.lean,
+    Comparator accepted Solution.lean against Challenge.lean twice: with the toolchain's lake
+    comparator run as Palomar runs it (Challenge compiled outside Lake, both modules exported with
+    leanexport, Lean's kernel plus the NanoDa and con-ron kernels), and with leanprover/comparator
+    (commit 32bd61d) built from source with the same toolchain and kernels. Both runs were
+    unsandboxed, because bubblewrap and landrun were not installed on that machine. A copy of
+    Challenge.lean with one altered definition (halfPow) was rejected.
 
 alignment:
   namespace: Zeta2
@@ -343,5 +347,5 @@ alignment:
 acknowledgements: >-
   Mathlib. The vendored Wiener–Ikehara and Schwartz-density files of mathlib4 pull requests #43046,
   #43233 and #43238 by Terence Tao, adapted from the PrimeNumberTheoremAnd project, keep their
-  Apache-2.0 headers. Lean's lake comparator, leanchecker, NanoDa and con-ron were used for
-  checking.
+  Apache-2.0 headers. Lean's lake comparator, leanprover/comparator, lean4export, leanchecker,
+  NanoDa and con-ron were used for checking.

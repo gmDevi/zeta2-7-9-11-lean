@@ -43,9 +43,10 @@ The development has two layers:
 * `zeta2 s = J (s-1) / ((s-1) * 2^s)`.
 
 **One cited identification, not formalised.** `zeta2 s` is defined through the Volkenborn integral. By
-Lai–Sprang–Zudilin (arXiv:2505.05005, Lemma 2.8) it equals the Kubota–Leopoldt value
-ζ₂(s) = L₂(s, ω^{1−s}), up to the stated normalisation. That relation is a multiplication by a nonzero
-rational factor, which does not affect irrationality.
+Lai–Sprang–Zudilin (IMRN 2026, rnag180; arXiv:2505.05005, Lemma 2.8), J(s−1) = (s−1)·2^s·ζ₂(s) for every
+integer s ≥ 2, where ζ₂(s) = L₂(s, ω^{1−s}) is the Kubota–Leopoldt value; so `zeta2 s` = ζ₂(s). This
+identification is cited, not formalised. It only involves the nonzero rational factor (s−1)·2^s, which does
+not affect irrationality.
 
 ## The mathematics
 
@@ -53,7 +54,8 @@ The informal proof is in `docs/proof.md`. The construction is
 
 R_n(t) = 2^{16n} (2t+n) (t+½)_n^8 / (t)_{n+1}^8,  S_n = −∫_{ℤ₂} R_n'''(t+½) dt = ρ₀ + Z₇ ζ₂(7) + Z₉ ζ₂(9) + Z₁₁ ζ₂(11).
 
-It is the (a, j) = (8, 3) member of the Lai–Sprang–Zudilin family. The ingredients are:
+It is the case (a, j) = (8, 3) (eighth powers, third derivative) of a family that extends the Lai–Sprang–Zudilin
+construction for ζ₂(5), which is the case (a, j) = (4, 1). The ingredients are:
 * the one-power denominator saving (Andrews' transformation), which gives D_n = d_n^{12}/Φ_n = e^{11n+o(n)};
 * coefficients bounded by poly(n)·2^{16n};
 * the exact valuation v₂(S_n) = 32n + 14 − 11m along n = 2^m − 1 (Lai's dominant-term method, with one new
@@ -64,15 +66,17 @@ The resulting exponent is 11 − 16 log 2 = −0.0904 < 0.
 
 ## Status and caveats
 
-* **Unrefereed.** The proof and this formalisation were produced with AI assistance (Claude) and have not been
-  reviewed by a human expert. The Lean kernel checks the formal statement as displayed above. Whether that
-  statement matches the mathematics is a matter of the trusted definitions and cited hypotheses listed here.
+* **Unrefereed, produced by AI agents.** The mathematics (the construction and the informal proof) and this
+  formalisation were produced by AI agents (Anthropic Claude models) under the direction of the maintainer,
+  and have not been reviewed by a human expert (`formalization.yaml` describes the process). The Lean kernel
+  checks the formal statement as displayed above. Whether that statement matches the mathematics is a matter
+  of the trusted definitions and the cited identification listed here.
 * **Novelty.** As of 2026-09-24 we found no prior statement of the {7, 9, 11} result in refereed work, arXiv,
-  Zenodo, zbMATH, OpenAlex, Crossref or public talks and blogs. Unrefereed GitHub drafts by C. D. Long
-  (August 2026) claim irrationality of every ζ₂(s) with s odd and s ≤ 29, which would imply this result. We
-  have not been able to verify their large-prime step.
-* **Scope.** The result cannot give "two of the three": the 2-adic Nesterenko ratio is 22.18/22.09 = 1.004,
-  and dimension 3 would need a ratio above 2.
+  Zenodo, zbMATH, OpenAlex, Crossref or public talks and blogs; Google Scholar and MathSciNet were not
+  searched. Unrefereed GitHub drafts by C. D. Long (August 2026) claim irrationality of every ζ₂(s) with s odd
+  and s ≤ 29, which would imply this result. We have not been able to verify their large-prime step.
+* **Scope.** This method does not give "two of the three": the 2-adic Nesterenko ratio is
+  22.18/22.09 = 1.004, and dimension 3 would need a ratio above 2.
 
 ## Layout
 
@@ -95,7 +99,9 @@ The resulting exponent is 11 − 16 log 2 = −0.0904 < 0.
 `Solution.lean` proves the same statement from `zeta2_7_9_11_not_all_rational_unconditional`. `comparator.json`
 asks Comparator to check that the two statements, and every definition they use, are identical, and that the
 proof uses only `propext`, `Quot.sound` and `Classical.choice`. The toolchain (v4.35.0-rc2) ships `lake comparator`;
-it needs `bwrap` (bubblewrap) for its sandbox. `formalization.yaml` records the sources, the production process and
+it needs `bwrap` (bubblewrap) for its sandbox. On 2026-09-25 the toolchain's `lake comparator`, run as Palomar runs
+it (with the NanoDa and con-ron kernels besides Lean's), and leanprover/comparator built from source both accepted
+`Solution.lean`; both runs were unsandboxed. `formalization.yaml` records the sources, the production process and
 the review status.
 
 ## Building
