@@ -26,9 +26,9 @@ project:
   # Placeholders: the human author(s) and maintainer(s) must be filled in before submission.
   # AI systems are credited in automation.methods, never here.
   authors:
-    - "<<AUTHOR NAME>>"
+    - "Gennaro Marco Devincenzis"
   responsible_maintainers:
-    - "<<AUTHOR NAME>>"
+    - "Gennaro Marco Devincenzis"
   license: "Apache-2.0"
 
 classification:
